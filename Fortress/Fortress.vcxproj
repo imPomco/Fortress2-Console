@@ -139,8 +139,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Fortress.c" />
+    <ClCompile Include="Main.c" />
     <ClCompile Include="Language.c" />
+    <ClCompile Include="PrintMenu.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="define.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

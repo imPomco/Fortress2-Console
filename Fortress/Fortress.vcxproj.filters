@@ -15,11 +15,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Fortress.c">
+    <ClCompile Include="Main.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Language.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="PrintMenu.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="define.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

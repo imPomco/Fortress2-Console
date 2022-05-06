@@ -1,36 +1,12 @@
-ï»¿#include <stdio.h>
 #include <Windows.h>
+#include "define.h"
 
-void printMenu();
-void gotoxy(int, int);
-void hideCursor();
-
-extern char ch[30][20];
-extern void lang();
-
-void main() {
-    korean();
-    printMenu();
-}
-void gotoxy(int x, int y) {
-    COORD pos = { x, y };
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
-}
-void hideCursor()
-{
-    CONSOLE_CURSOR_INFO cursorInfo;
-    cursorInfo.dwSize = 1;
-    cursorInfo.bVisible = FALSE;
-    SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
-}
-
-void printMenu() {
-    int flag = 1;
+void printMenu() { // ¸ÞÀÎ ¸Þ´º Ãâ·Â
+    int flag = 1; //»ç¿ëÀÚ°¡ ¾î¶² ¸Þ´º¸¦ ¼±ÅÃÇß´ÂÁö È®ÀÎÇÏ´Â º¯¼ö
     int i = 0;
     int x = 74, y = 40;
 
-    hideCursor();
-    system("mode con cols=160 lines=50"); // ì½˜ì†” ì°½ í¬ê¸° ì§€ì • cols : ê°€ë¡œ, lines : ì„¸ë¡œ
+    system("mode con cols=160 lines=50"); // ÄÜ¼Ö Ã¢ Å©±â ÁöÁ¤ cols : °¡·Î, lines : ¼¼·Î
 
     gotoxy(0, 2);
     printf("\t\t\t\t\t########  #######  ########  ######## ########  ########  ######   ###### \n");
@@ -44,7 +20,7 @@ void printMenu() {
     gotoxy(x, 36);
     printf("%s\n", ch[i++]);
     gotoxy(x - 4, y);
-    printf("â–¶  %s", ch[i++]);
+    printf("¢º  %s", ch[i++]);
     gotoxy(x, y + 2);
     printf("%s", ch[i++]);
     gotoxy(x, y + 4);
@@ -53,39 +29,39 @@ void printMenu() {
     printf("%s", ch[i++]);
     gotoxy(x, y);
     while (1) {
-        if (GetAsyncKeyState(VK_UP)) { // ìœ„
+        if (GetAsyncKeyState(VK_UP)) { // ¹æÇâÅ° À§°¡ ÀÔ·ÂµÇ¾úÀ» ¶§
             if (y > 40) {
                 gotoxy(x - 4, y);
                 printf("  ");
                 gotoxy(x - 4, y -= 2);
-                printf("â–¶");
+                printf("¢º");
                 Sleep(100);
                 flag--;
             }
 
         }
-        if (GetAsyncKeyState(VK_DOWN)) { // ì•„ëž˜
+        if (GetAsyncKeyState(VK_DOWN)) { // ¹æÇâÅ° ¾Æ·¡°¡ ÀÔ·ÂµÇ¾úÀ» ¶§
             if (y <= 44) {
                 gotoxy(x - 4, y);
                 printf("  ");
                 gotoxy(x - 4, y += 2);
-                printf("â–¶");
+                printf("¢º");
                 Sleep(100);
                 flag++;
             }
         }
-        if (GetAsyncKeyState(VK_SPACE)) { // ìŠ¤íŽ˜ì´ìŠ¤
+        if (GetAsyncKeyState(VK_SPACE)) { // ½ºÆäÀÌ½ºÅ°°¡ ÀÔ·ÂµÇ¾úÀ» ¶§
             switch (flag) {
-                case 1:
-                    break;//1ì¸ í”Œë ˆì´
-                case 2:
-                    break;//2ì¸ í”Œë ˆì´
-                case 3:
-                    Sleep(100);
-                    lang();
-                    break;//ì–¸ì–´ ì„ íƒ
-                case 4: //ê²Œìž„ ì¢…ë£Œ
-                    exit(0);
+            case 1:
+                break; // 1ÀÎ ÇÃ·¹ÀÌ
+            case 2:
+                break; // 2ÀÎ ÇÃ·¹ÀÌ
+            case 3:
+                Sleep(200);
+                setLang();
+                break; // ¾ð¾î ¼±ÅÃ
+            case 4: // °ÔÀÓ Á¾·á
+                exit(0);
 
             }
         }
