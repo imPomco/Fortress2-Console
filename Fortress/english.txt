@@ -1,0 +1,5 @@
+Mode Select
+Single Play
+Multi Play
+Select Language
+Quit Game
