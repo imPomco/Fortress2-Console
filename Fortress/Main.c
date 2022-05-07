@@ -1,11 +1,10 @@
-﻿#include <stdio.h>
-#include <Windows.h>
-#include "define.h"
+﻿#include "define.h"
 
 void gotoxy(int, int);
 void hideCursor();
 
 void main() {
+    PlaySound(TEXT("sounds\\main.wav"), 0, SND_FILENAME | SND_ASYNC | SND_LOOP);
     hideCursor();
     kor(); // 언어의 기본값을 한국어로 설정
     printMenu(); // 메뉴 출력

@@ -142,6 +142,8 @@
     <ClCompile Include="Main.c" />
     <ClCompile Include="Language.c" />
     <ClCompile Include="PrintMenu.c" />
+    <ClCompile Include="Single.c" />
+    <ClCompile Include="Sound.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="define.h" />

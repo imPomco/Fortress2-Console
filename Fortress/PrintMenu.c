@@ -1,7 +1,8 @@
-#include <Windows.h>
 #include "define.h"
 
+
 void printMenu() { // 메인 메뉴 출력
+
     int flag = 1; //사용자가 어떤 메뉴를 선택했는지 확인하는 변수
     int i = 0;
     int x = 74, y = 40;
@@ -53,13 +54,14 @@ void printMenu() { // 메인 메뉴 출력
         if (GetAsyncKeyState(VK_SPACE)) { // 스페이스키가 입력되었을 때
             switch (flag) {
             case 1:
+                single();
                 break; // 1인 플레이
             case 2:
                 break; // 2인 플레이
-            case 3:
+            case 3: // 언어 선택
                 Sleep(200);
                 setLang();
-                break; // 언어 선택
+                break;
             case 4: // 게임 종료
                 exit(0);
 

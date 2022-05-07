@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <Windows.h>
 #include "define.h"
 
 void kor();
@@ -56,15 +54,16 @@ void setLang() { // 언어 설정 화면 출력
             switch (flag) {
                 case 1: // 한국어
                     kor();
-                    printMenu();
+                    Sleep(100);
                     break;
                 case 2: // 영어
                     eng();
-                    printMenu();
+                    Sleep(100);
                     break;
                 case 3: // 중국어
                     break;
             }
+            printMenu();
         }
     }
 }
