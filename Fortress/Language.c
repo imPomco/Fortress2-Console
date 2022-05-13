@@ -46,7 +46,7 @@ void setLang() { // 언어 설정 화면 출력
                 flag++;
             }
         }
-        if (GetAsyncKeyState(VK_SPACE)) { // 스페이스키가 입력되었을 때
+        if (GetAsyncKeyState(VK_RETURN)) { // 스페이스키가 입력되었을 때
             /*
             switch 문을 사용해 해당언어가 선택되면 그에 맞는 언어 함수를 호출하고,
             printMenu 함수를 호출해 다시 메인 메뉴로 돌아감 

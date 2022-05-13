@@ -24,10 +24,13 @@
     <ClCompile Include="PrintMenu.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Single.c">
+    <ClCompile Include="Multi.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Sound.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ReadMap.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

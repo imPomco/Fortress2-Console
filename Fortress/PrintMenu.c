@@ -36,7 +36,7 @@ void printMenu() { // 메인 메뉴 출력
                 printf("  ");
                 gotoxy(x - 4, y -= 2);
                 printf("▶");
-                Sleep(100);
+                Sleep(200);
                 flag--;
             }
 
@@ -47,17 +47,17 @@ void printMenu() { // 메인 메뉴 출력
                 printf("  ");
                 gotoxy(x - 4, y += 2);
                 printf("▶");
-                Sleep(100);
+                Sleep(200);
                 flag++;
             }
         }
-        if (GetAsyncKeyState(VK_SPACE)) { // 스페이스키가 입력되었을 때
+        if (GetAsyncKeyState(VK_RETURN)) { // 스페이스키가 입력되었을 때
             switch (flag) {
-            case 1:
-                single();
-                break; // 1인 플레이
-            case 2:
-                break; // 2인 플레이
+            case 1: // 1인 플레이
+                break; 
+            case 2: // 2인 플레이
+                multiStart();
+                break; 
             case 3: // 언어 선택
                 Sleep(200);
                 setLang();
