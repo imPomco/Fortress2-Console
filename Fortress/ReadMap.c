@@ -26,7 +26,7 @@ void readMap() {
     int i = 0;
     char ch = NULL;
 
-    FILE* fp = fopen("map\\map.txt", "r");
+    FILE* fp = fopen("map\\map.bin", "r");
     if (fp != NULL) {
         while (!feof(fp)) {
             fgets(map[i], 320, fp);
