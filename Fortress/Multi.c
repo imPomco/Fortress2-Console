@@ -1,10 +1,10 @@
 #include "define.h"
 
-#define KEYDOWN(VK_SPACE) ((GetAsyncKeyState(VK_SPACE) & 0x8000 ? 1 : 0))
+#define KEYDOWN(VK_CODE) ((GetAsyncKeyState(VK_CODE) & 0x8001 ? 1 : 0))
 
 // 피격시 데미지 구현 필요, 승리 또는 패배시 lang_line 함수에 정수 4 추가 필요
 
-void countDown();
+unsigned __stdcall countDown();
 void enemyTurn();
 void fire(int, int, int, int, int);
 void init();
@@ -83,7 +83,7 @@ void myTurn() {
 		printf("%s ", lang[7]);
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
 		if (KEYDOWN(VK_SPACE)) {
-			Sleep(50);
+			Sleep(150);
 			while (power <= 100) {
 				power++;
 				Sleep(30);
@@ -114,7 +114,7 @@ void myTurn() {
 					continue;
 				move -= 5;
 				printf("\b\b\b\b\b      ");
-				Sleep(100);
+				Sleep(80);
 				gotoxy(my_tank_x, my_tank_y);
 				printf(" ");
 				while (map[my_tank_y + 1][my_tank_x + 1] != '1') { // 내려갈 때
@@ -139,7 +139,7 @@ void myTurn() {
 					continue;
 				move -= 5;
 				printf("\b\b\b\b     ");
-				Sleep(100);
+				Sleep(80);
 				gotoxy(my_tank_x, my_tank_y);
 				printf(" ");
 
@@ -222,7 +222,7 @@ void enemyTurn() {
 		printf("%s ", lang[7]);
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
 		if (KEYDOWN(VK_SPACE)) {
-			Sleep(50);
+			Sleep(150);
 			while (power <= 100) {
 				power++;
 				Sleep(30);
@@ -253,7 +253,7 @@ void enemyTurn() {
 					continue;
 				move -= 5;
 				printf("\b\b\b\b\b      ");
-				Sleep(100);
+				Sleep(80);
 				gotoxy(enemy_tank_x, enemy_tank_y);
 				printf(" ");
 
@@ -279,7 +279,7 @@ void enemyTurn() {
 					continue;
 				move -= 5;
 				printf("\b\b\b\b\b      ");
-				Sleep(100);
+				Sleep(80);
 				gotoxy(enemy_tank_x, enemy_tank_y);
 				printf(" ");
 
@@ -319,11 +319,11 @@ void fire(int angle, int power, int tank_x, int tank_y, int heading) { // 발사했
 	while (1) {
 		time += 0.01;
 		if (heading  == 1)
-			x = tank_x + (power * cos(radian) * time);
+			x = (int)(tank_x + (power * cos(radian) * time));
 		else
-			x = tank_x - (power * cos(radian) * time);
+			x = (int)(tank_x - (power * cos(radian) * time));
 
-		y = tank_y - (power * sin(radian) * time - 0.5 * GRAVITY * time * time);
+		y = (int)(tank_y - (power * sin(radian) * time - 0.5 * GRAVITY * time * time));
 
 		if (x <= 0 || x >= MAX_X_WIDTH || y > 40) // 포탄이 맵의 x축 또는 y축 하단을 벗어날 경우
 			break;
@@ -368,7 +368,7 @@ void fire(int angle, int power, int tank_x, int tank_y, int heading) { // 발사했
 		}
 	}
 }
-void countDown() { // 카운트다운 스레드 선언
+unsigned __stdcall countDown() { // 카운트다운 스레드 선언
 	while (count > 0 && fireFlag == 0)
 	{
 		Sleep(1000);
