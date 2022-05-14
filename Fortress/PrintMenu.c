@@ -1,10 +1,9 @@
 #include "define.h"
 
-
 void printMenu() { // 메인 메뉴 출력
 
+    lang_lines = 0;
     int flag = 1; //사용자가 어떤 메뉴를 선택했는지 확인하는 변수
-    int i = 0;
     int x = 74, y = 40;
 
     system("mode con cols=160 lines=50"); // 콘솔 창 크기 지정 cols : 가로, lines : 세로
@@ -19,15 +18,15 @@ void printMenu() { // 메인 메뉴 출력
     printf("\t\t\t\t\t##        #######  ##     ##    ##    ##     ## ########  ######   ###### \n");
 
     gotoxy(x, 36);
-    printf("%s\n", ch[i++]);
+    printf("%s\n", lang[lang_lines++]);
     gotoxy(x - 4, y);
-    printf("▶  %s", ch[i++]);
+    printf("▶  %s", lang[lang_lines++]);
     gotoxy(x, y + 2);
-    printf("%s", ch[i++]);
+    printf("%s", lang[lang_lines++]);
     gotoxy(x, y + 4);
-    printf("%s", ch[i++]);
+    printf("%s", lang[lang_lines++]);
     gotoxy(x, y + 6);
-    printf("%s", ch[i++]);
+    printf("%s", lang[lang_lines++]);
     gotoxy(x, y);
     while (1) {
         if (GetAsyncKeyState(VK_UP)) { // 방향키 위가 입력되었을 때

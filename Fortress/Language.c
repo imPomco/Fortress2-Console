@@ -3,7 +3,7 @@
 void kor();
 void eng();
 
-char ch[30][20] = { 0, };
+char lang[30][20] = { 0, };
 
 void setLang() { // 언어 설정 화면 출력 
     int flag = 1; //사용자가 무슨 언어를 선택했는지 확인하는 변수
@@ -34,7 +34,6 @@ void setLang() { // 언어 설정 화면 출력
                 Sleep(200);
                 flag--;
             }
-
         }
         if (GetAsyncKeyState(VK_RIGHT)) { // 방향키 오른쪽이 입력되었을 때
             if (x <= 105) {
@@ -77,7 +76,10 @@ void kor() {
     FILE* file = fopen("language\\korean.txt", "r");
     if (file != NULL) {
         while (!feof(file)) {
-            fgets(ch[i], 30, file);
+            fgets(lang[i], 20, file);
+            for (int j = 1; j < 20; j++)
+                if (lang[i][j - 1] == '\n')
+                    lang[i][j - 1] = '\0';
             i++;
         }
         fclose(file);
@@ -89,7 +91,10 @@ void eng() {
     FILE* file = fopen("language\\english.txt", "r");
     if (file != NULL) {
         while (!feof(file)) {
-            fgets(ch[i], 30, file);
+            fgets(lang[i], 20, file);
+            for (int j = 1; j < 20; j++)
+                if (lang[i][j - 1] == '\n')
+                    lang[i][j - 1] = '\0';
             i++;
         }
         fclose(file);

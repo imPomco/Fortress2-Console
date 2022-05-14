@@ -3,3 +3,7 @@ Single Play
 Multi Play
 Select Language
 Quit Game
+HP
+AN
+PO
+MV
