@@ -45,7 +45,7 @@ void setLang() { // 언어 설정 화면 출력
                 flag++;
             }
         }
-        if (GetAsyncKeyState(VK_RETURN)) { // 스페이스키가 입력되었을 때
+        if (GetAsyncKeyState(VK_SPACE) & 0x8000) { // 스페이스키가 입력되었을 때
             /*
             switch 문을 사용해 해당언어가 선택되면 그에 맞는 언어 함수를 호출하고,
             printMenu 함수를 호출해 다시 메인 메뉴로 돌아감 
@@ -68,7 +68,7 @@ void setLang() { // 언어 설정 화면 출력
 }
 /*
 프로젝트 폴더내부에 존재하는 언어 파일(ex. language\korean.txt) 내부에 있는 문자열을 한 줄씩 읽어와
-ch 2차원 배열에 문자열 형태로 저장.
+lang 2차원 배열에 문자열 형태로 저장.
 */
 void kor() {
     int i = 0;

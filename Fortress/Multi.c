@@ -1,8 +1,7 @@
 #include "define.h"
 
-#define KEYDOWN(VK_CODE) ((GetAsyncKeyState(VK_CODE) & 0x8001 ? 1 : 0))
+#define KEYDOWN(VK_CODE) ((GetAsyncKeyState(VK_CODE) & 0x8000 ? 1 : 0))
 
-// 피격시 데미지 구현 필요, 승리 또는 패배시 lang_line 함수에 정수 4 추가 필요
 
 unsigned __stdcall countDown();
 void enemyTurn();
@@ -117,6 +116,8 @@ void myTurn() {
 				Sleep(80);
 				gotoxy(my_tank_x, my_tank_y);
 				printf(" ");
+				gotoxy(enemy_tank_x, enemy_tank_y - 2);
+
 				while (map[my_tank_y + 1][my_tank_x + 1] != '1') { // 내려갈 때
 					if (my_tank_y == 40)
 						exit(0);
@@ -129,7 +130,7 @@ void myTurn() {
 					my_tank_x++;
 				else
 					move += 5; // 이동이 불가능하면 이동 게이지 다시 증가
-				playFX(2);
+				playFX(3);
 			}
 		}
 		if (KEYDOWN(VK_LEFT)) { // 왼쪽 방향키 입력 시 좌측으로 이동
@@ -138,10 +139,11 @@ void myTurn() {
 				if (move <= 0)
 					continue;
 				move -= 5;
-				printf("\b\b\b\b     ");
+				printf("\b\b\b\b\b      ");
 				Sleep(80);
 				gotoxy(my_tank_x, my_tank_y);
 				printf(" ");
+				gotoxy(enemy_tank_x, enemy_tank_y - 2);
 
 				while (map[my_tank_y + 1][my_tank_x - 1] != '1') {// 내려갈 때
 					if (my_tank_y == 40)
@@ -155,7 +157,7 @@ void myTurn() {
 					my_tank_x--;
 				else
 					move += 5; // 이동이 불가능하면 이동 게이지 다시 증가
-				playFX(2);
+				playFX(3);
 			}
 		}
 		gotoxy(150, 46);
@@ -179,6 +181,7 @@ void enemyTurn() {
 	printMap();
 
 	while (countFlag) {
+
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 9);
 		gotoxy(my_tank_x, my_tank_y);
 		printf("%c", enemy_tank);
@@ -269,7 +272,7 @@ void enemyTurn() {
 					enemy_tank_x++;
 				else
 					move += 5; // 이동이 불가능하면 이동 게이지 다시 증가
-				playFX(2);
+				playFX(3);
 			}
 		}
 		if (KEYDOWN(VK_LEFT)) { // 왼쪽 방향키 입력 시 좌측으로 이동
@@ -295,7 +298,7 @@ void enemyTurn() {
 					enemy_tank_x--;
 				else
 					move += 5; // 이동이 불가능하면 이동 게이지 다시 증가
-				playFX(2);
+				playFX(3);
 			}
 		}
 
@@ -313,7 +316,7 @@ void fire(int angle, int power, int tank_x, int tank_y, int heading) { // 발사했
 	power /= 2;
 	radian = angle * 3.14 / 180;
 
-	playFX(3);
+	playFX(4);
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
 
 	while (1) {
@@ -337,7 +340,7 @@ void fire(int angle, int power, int tank_x, int tank_y, int heading) { // 발사했
 		else
 			Sleep(8);
 		if (map[y][x] == '1') { // 포탄이 지형에 닿았을 경우 지형이 파이는 효과 구현
-			playFX(rand() % 3 + 4);
+			playFX(rand() % 3 + 5);
 			for (int i = 0; i < 5; i++) {
 				if (x + i <= MAX_X_WIDTH) {
 					map[y][x + i] = '0';
@@ -369,12 +372,13 @@ void fire(int angle, int power, int tank_x, int tank_y, int heading) { // 발사했
 	}
 }
 unsigned __stdcall countDown() { // 카운트다운 스레드 선언
-	while (count > 0 && fireFlag == 0)
-	{
+	while (count > 0 && fireFlag == 0) {
 		Sleep(1000);
 		count--;
-		if (count <= 5)
+		if (count > 5)
 			playFX(1);
+		else
+			playFX(2);
 	}
 	countFlag = 0;
 	return;

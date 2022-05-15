@@ -50,7 +50,7 @@ void printMenu() { // 메인 메뉴 출력
                 flag++;
             }
         }
-        if (GetAsyncKeyState(VK_RETURN)) { // 스페이스키가 입력되었을 때
+        if (GetAsyncKeyState(VK_SPACE) & 0x8000) { // 스페이스키가 입력되었을 때
             switch (flag) {
             case 1: // 1인 플레이
                 break; 
