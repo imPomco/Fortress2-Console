@@ -15,8 +15,6 @@ static int count = 15;
 static int my_tank_x = 10, my_tank_y = 20; // 나의 탱크 좌표를 저장하는 변수
 static int enemy_tank_x = 150, enemy_tank_y = 20; // 적의 탱크 좌표를 저장하는 변수
 
-
-
 void multiStart() {
 	stopMusic(1);
 	playMusic(2);
@@ -375,7 +373,7 @@ unsigned __stdcall countDown() { // 카운트다운 스레드 선언
 	while (count > 0 && fireFlag == 0) {
 		Sleep(1000);
 		count--;
-		if (count > 5)
+		if (count >= 5)
 			playFX(1);
 		else
 			playFX(2);

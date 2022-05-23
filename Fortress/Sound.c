@@ -28,7 +28,7 @@ void playFX(int flag) { // 효과음 재생 함수 (효과음 길이가 길지 않아 중단 함수 �
 			mciSendString(L"play sounds\\count_down.mp3", NULL, 0, 0); // 카운트 다운 효과음
 			break;
 		case 2:
-			mciSendString(L"play sounds\\count_down_2.mp3", NULL, 0, 0); // 카운트 다운 5초 남았을때 효과음
+			mciSendString(L"play sounds\\count_down_2.mp3", NULL, 0, 0); // 카운트 다운 5초 미만으로 남았을 때 효과음
 			break;
 		case 3:
 			mciSendString(L"play sounds\\tank_move.mp3", NULL, 0, 0); // 탱크 이동 효과음
