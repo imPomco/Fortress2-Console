@@ -17,10 +17,10 @@ void myTurn();
 static int fireFlag = 0;
 static int countFlag = 1;
 static int count = 15;
-struct tank my_tank = { 10, 20, 100 };
-struct tank enemy_tank = { 30, 20, 100 };
+struct tank myTank = { 10, 20, 100 };
+struct tank enemyTank = { 30, 20, 100 };
 
-void multiStart() {
+void localStart() {
 	stopMusic(1);
 	playMusic(2);
 	readMap();
@@ -42,11 +42,11 @@ void myTurn() {
 	while (countFlag) {
 
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 9);
-		gotoxy(my_tank.x, my_tank.y);
+		gotoxy(myTank.x, myTank.y);
 		printf("%c", t);
 
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
-		gotoxy(enemy_tank.x, enemy_tank.y);
+		gotoxy(enemyTank.x, enemyTank.y);
 		printf("%c", t);
 
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
@@ -57,11 +57,11 @@ void myTurn() {
 		gotoxy(30, 42);
 		printf("%s ", lang[5]);
 
-		for (int i = 0; i < my_tank.health; i++) {
+		for (int i = 0; i < myTank.health; i++) {
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
-			if (my_tank.health < 30)
+			if (myTank.health < 30)
 				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 4);
-			else if (my_tank.health < 50)
+			else if (myTank.health < 50)
 				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 6);
 			printf("|");
 		}
@@ -91,12 +91,12 @@ void myTurn() {
 				printf("|");
 				if (KEYDOWN(VK_SPACE)) {
 					fireFlag = 1;
-					fire(angle, power, my_tank.x, my_tank.y, headingFlag);
+					fire(angle, power, myTank.x, myTank.y, headingFlag);
 					break;
 				}
 				if (power == 100) {
 					fireFlag = 1;
-					fire(angle, power, my_tank.x, my_tank.y, headingFlag);
+					fire(angle, power, myTank.x, myTank.y, headingFlag);
 					break;
 				}
 			}
@@ -109,54 +109,54 @@ void myTurn() {
 			printf("|");
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
 		if (KEYDOWN(VK_RIGHT)) { // 오른쪽 방향키 입력 시 우측으로 이동
-			if (my_tank.x < MAX_X_WIDTH) {
+			if (myTank.x < MAX_X_WIDTH) {
 				headingFlag = 1;
 				if (move <= 0)
 					continue;
 				move -= 5;
 				printf("\b\b\b\b\b      ");
 				Sleep(80);
-				gotoxy(my_tank.x, my_tank.y);
+				gotoxy(myTank.x, myTank.y);
 				printf(" ");
-				gotoxy(enemy_tank.x, enemy_tank.y - 2);
+				gotoxy(enemyTank.x, enemyTank.y - 2);
 
-				while (map[my_tank.y + 1][my_tank.x + 1] != '1') { // 내려갈 때
-					if (my_tank.y == 40)
+				while (map[myTank.y + 1][myTank.x + 1] != '1') { // 내려갈 때
+					if (myTank.y == 40) // 맵 밖으로 이탈했을 때
 						exit(0);
-					my_tank.y++;
+					myTank.y++;
 				}
-				while (map[my_tank.y][my_tank.x + 1] == '1' && map[my_tank.y - 1][my_tank.x + 1] == '0') { // 올라갈 때
-					my_tank.y--;
+				while (map[myTank.y][myTank.x + 1] == '1' && map[myTank.y - 1][myTank.x + 1] == '0') { // 올라갈 때
+					myTank.y--;
 				}
-				if (map[my_tank.y][my_tank.x + 1] != '1') // 이동이 가능하면 x축 조정
-					my_tank.x++;
+				if (map[myTank.y][myTank.x + 1] != '1') // 이동이 가능하면 x축 조정
+					myTank.x++;
 				else
 					move += 5; // 이동이 불가능하면 이동 게이지 다시 증가
 				playFX(3);
 			}
 		}
 		if (KEYDOWN(VK_LEFT)) { // 왼쪽 방향키 입력 시 좌측으로 이동
-			if (my_tank.x > 0) {
+			if (myTank.x > 0) {
 				headingFlag = 2;
 				if (move <= 0)
 					continue;
 				move -= 5;
 				printf("\b\b\b\b\b      ");
 				Sleep(80);
-				gotoxy(my_tank.x, my_tank.y);
+				gotoxy(myTank.x, myTank.y);
 				printf(" ");
-				gotoxy(enemy_tank.x, enemy_tank.y - 2);
+				gotoxy(enemyTank.x, enemyTank.y - 2);
 
-				while (map[my_tank.y + 1][my_tank.x - 1] != '1') {// 내려갈 때
-					if (my_tank.y == 40)
+				while (map[myTank.y + 1][myTank.x - 1] != '1') {// 내려갈 때
+					if (myTank.y == 40)
 						exit(0);
-					my_tank.y++;
+					myTank.y++;
 				}
-				while (map[my_tank.y][my_tank.x - 1] == '1' && map[my_tank.y - 1][my_tank.x - 1] == '0') { // 올라갈 때
-					my_tank.y--;
+				while (map[myTank.y][myTank.x - 1] == '1' && map[myTank.y - 1][myTank.x - 1] == '0') { // 올라갈 때
+					myTank.y--;
 				}
-				if (map[my_tank.y][my_tank.x - 1] != '1') // 이동이 가능하면 x축 조정
-					my_tank.x--;
+				if (map[myTank.y][myTank.x - 1] != '1') // 이동이 가능하면 x축 조정
+					myTank.x--;
 				else
 					move += 5; // 이동이 불가능하면 이동 게이지 다시 증가
 				playFX(3);
@@ -184,11 +184,11 @@ void enemyTurn() {
 	while (countFlag) {
 
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 9);
-		gotoxy(my_tank.x, my_tank.y);
+		gotoxy(myTank.x, myTank.y);
 		printf("%c", t);
 
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
-		gotoxy(enemy_tank.x, enemy_tank.y);
+		gotoxy(enemyTank.x, enemyTank.y);
 		printf("%c", t);
 
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
@@ -199,11 +199,11 @@ void enemyTurn() {
 		gotoxy(30, 42);
 		printf("%s ", lang[5]);
 
-		for (int i = 0; i < enemy_tank.health; i++) {
+		for (int i = 0; i < enemyTank.health; i++) {
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
-			if (enemy_tank.health < 30)
+			if (enemyTank.health < 30)
 				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 4);
-			else if (enemy_tank.health < 50)
+			else if (enemyTank.health < 50)
 				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 6);
 			printf("|");
 		}
@@ -233,12 +233,12 @@ void enemyTurn() {
 				printf("|");
 				if (KEYDOWN(VK_SPACE)) {
 					fireFlag = 1;
-					fire(angle, power, enemy_tank.x, enemy_tank.y, headingFlag);
+					fire(angle, power, enemyTank.x, enemyTank.y, headingFlag);
 					break;
 				}
 				if (power == 100) {
 					fireFlag = 1;
-					fire(angle, power, enemy_tank.x, enemy_tank.y, headingFlag);
+					fire(angle, power, enemyTank.x, enemyTank.y, headingFlag);
 					break;
 				}
 			}
@@ -251,52 +251,52 @@ void enemyTurn() {
 			printf("|");
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
 		if (KEYDOWN(VK_RIGHT)) { // 오른쪽 방향키 입력 시 우측으로 이동
-			if (enemy_tank.x < MAX_X_WIDTH) {
+			if (enemyTank.x < MAX_X_WIDTH) {
 				headingFlag = 1;
 				if (move <= 0)
 					continue;
 				move -= 5;
 				printf("\b\b\b\b\b      ");
 				Sleep(80);
-				gotoxy(enemy_tank.x, enemy_tank.y);
+				gotoxy(enemyTank.x, enemyTank.y);
 				printf(" ");
 
-				while (map[enemy_tank.y + 1][enemy_tank.x + 1] != '1') { // 내려갈 때
-					if (enemy_tank.y == 40)
+				while (map[enemyTank.y + 1][enemyTank.x + 1] != '1') { // 내려갈 때
+					if (enemyTank.y == 40) // 맵 밖으로 이탈했을 때
 						exit(0);
-					enemy_tank.y++;
+					enemyTank.y++;
 				}
-				while (map[enemy_tank.y][enemy_tank.x + 1] == '1' && map[enemy_tank.y - 1][enemy_tank.x + 1] == '0') {// 올라갈 때
-					enemy_tank.y--;
+				while (map[enemyTank.y][enemyTank.x + 1] == '1' && map[enemyTank.y - 1][enemyTank.x + 1] == '0') {// 올라갈 때
+					enemyTank.y--;
 				}
-				if (map[enemy_tank.y][enemy_tank.x + 1] != '1') // 이동이 가능하면 x축 조정
-					enemy_tank.x++;
+				if (map[enemyTank.y][enemyTank.x + 1] != '1') // 이동이 가능하면 x축 조정
+					enemyTank.x++;
 				else
 					move += 5; // 이동이 불가능하면 이동 게이지 다시 증가
 				playFX(3);
 			}
 		}
 		if (KEYDOWN(VK_LEFT)) { // 왼쪽 방향키 입력 시 좌측으로 이동
-			if (enemy_tank.x > 0) {
+			if (enemyTank.x > 0) {
 				headingFlag = 2;
 				if (move <= 0)
 					continue;
 				move -= 5;
 				printf("\b\b\b\b\b      ");
 				Sleep(80);
-				gotoxy(enemy_tank.x, enemy_tank.y);
+				gotoxy(enemyTank.x, enemyTank.y);
 				printf(" ");
 
-				while (map[enemy_tank.y + 1][enemy_tank.x - 1] != '1') { // 내려갈 때
-					if (enemy_tank.y == 40)
+				while (map[enemyTank.y + 1][enemyTank.x - 1] != '1') { // 내려갈 때
+					if (enemyTank.y == 40)
 						exit(0);
-					enemy_tank.y++;
+					enemyTank.y++;
 				}
-				while (map[enemy_tank.y][enemy_tank.x - 1] == '1' && map[enemy_tank.y - 1][enemy_tank.x - 1] == '0') { // 올라갈 때
-					enemy_tank.y--;
+				while (map[enemyTank.y][enemyTank.x - 1] == '1' && map[enemyTank.y - 1][enemyTank.x - 1] == '0') { // 올라갈 때
+					enemyTank.y--;
 				}
-				if (map[enemy_tank.y][enemy_tank.x - 1] != '1') // 이동이 가능하면 x축 조정
-					enemy_tank.x--;
+				if (map[enemyTank.y][enemyTank.x - 1] != '1') // 이동이 가능하면 x축 조정
+					enemyTank.x--;
 				else
 					move += 5; // 이동이 불가능하면 이동 게이지 다시 증가
 				playFX(3);
@@ -313,6 +313,7 @@ void fire(int angle, int power, int tank_x, int tank_y, int heading) { // 발사했
 	const double GRAVITY = 9.8;
 	double radian, time = 0;
 	int x, y;
+	int dmg = 0;
 
 	power /= 2;
 	radian = angle * 3.14 / 180;
@@ -340,43 +341,43 @@ void fire(int angle, int power, int tank_x, int tank_y, int heading) { // 발사했
 		}
 		else
 			Sleep(8);
-		if (map[y][x] == '1') { // 포탄이 지형에 닿았을 경우 지형이 파이는 효과 구현
+		if (map[y][x] == '1') { // 포탄이 지형에 닿았을 경우 지형이 파이는 효과와 피격시 데미지 구현
 			playFX(rand() % 3 + 5);
 			for (int i = 0; i < 5; i++) {
-				if (x + i == my_tank.x) {
+				if (x + i == myTank.x || x - i == myTank.x) {
 					switch (i) {
 						case 0:
-							my_tank.health -= 30;
+							dmg = 30;
 							break;
 						case 1:
-							my_tank.health -= 16;
+							dmg = 16;
 							break;
 						case 2:
-							my_tank.health -= 14;
+							dmg = 14;
 							break;
 						case 3:
-							my_tank.health -= 12;
+							dmg = 12;
 							break;
 						case 4:
-							my_tank.health -= 10;
+							dmg = 10;
 					}
 				}
-				if (x + i == enemy_tank.x) {
+				if (x + i == enemyTank.x || x - i == enemyTank.x) {
 					switch (i) {
 					case 0:
-						enemy_tank.health -= 30;
+						dmg = 30;
 						break;
 					case 1:
-						enemy_tank.health -= 16;
+						dmg = 16;
 						break;
 					case 2:
-						enemy_tank.health -= 14;
+						dmg = 14;
 						break;
 					case 3:
-						enemy_tank.health -= 12;
+						dmg = 12;
 						break;
 					case 4:
-						enemy_tank.health -= 10;
+						dmg = 10;
 					}
 				}
 				if (x + i <= MAX_X_WIDTH) {
@@ -385,24 +386,30 @@ void fire(int angle, int power, int tank_x, int tank_y, int heading) { // 발사했
 				}
 			}
 			for (int j = 0; j < 3; j++) {
+				if ((x + j == myTank.x || x - j == myTank.x) && (y == myTank.y || y - 1 == myTank.y || y + 1 == myTank.y)) {
+						myTank.health -= dmg;
+				}
+				if ((x + j == enemyTank.x || x - j == enemyTank.x) && (y == enemyTank.y || y - 1 == enemyTank.y || y + 1 == enemyTank.y)) {
+						enemyTank.health -= dmg;
+				}
 				if (x + j <= MAX_X_WIDTH) {
 					map[y + 1][x + j] = '0';
 					map[y + 1][x - j] = '0';
 				}
 			}
-			if (map[enemy_tank.y + 1][enemy_tank.x] == '0')
-				while (map[enemy_tank.y + 1][enemy_tank.x] != '1') {
-					if (enemy_tank.y == 40)
+			if (map[enemyTank.y + 1][enemyTank.x] == '0')
+				while (map[enemyTank.y + 1][enemyTank.x] != '1') {
+					if (enemyTank.y == 40)
 						exit(0);
 					else
-						enemy_tank.y++;
+						enemyTank.y++;
 				}
-			if (map[my_tank.y + 1][my_tank.x] == '0')
-				while (map[my_tank.y + 1][my_tank.x] != '1') {
-					if (my_tank.y == 40)
+			if (map[myTank.y + 1][myTank.x] == '0')
+				while (map[myTank.y + 1][myTank.x] != '1') {
+					if (myTank.y == 40)
 						exit(0);
 					else
-						my_tank.y++;
+						myTank.y++;
 				}
 			break;
 		}
@@ -425,10 +432,10 @@ void init() { // 초기화 함수
 	fireFlag = 0;
 	countFlag = 1;
 	count = 15;
-	while (map[my_tank.y + 1][my_tank.x + 1] != '1') {
-		my_tank.y++;
+	while (map[myTank.y + 1][myTank.x + 1] != '1') {
+		myTank.y++;
 	}
-	while (map[enemy_tank.y + 1][enemy_tank.x + 1] != '1') {
-		enemy_tank.y++;
+	while (map[enemyTank.y + 1][enemyTank.x + 1] != '1') {
+		enemyTank.y++;
 	}
 }

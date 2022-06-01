@@ -120,6 +120,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>wsock32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -136,14 +137,19 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>wsock32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.c" />
     <ClCompile Include="Language.c" />
+    <ClCompile Include="MultiSelect.c" />
+    <ClCompile Include="NetTestClient.c" />
+    <ClCompile Include="NetTestServer.c" />
     <ClCompile Include="PrintMenu.c" />
     <ClCompile Include="ReadMap.c" />
-    <ClCompile Include="Multi.c" />
+    <ClCompile Include="Local.c" />
+    <ClCompile Include="Single.c" />
     <ClCompile Include="Sound.c" />
   </ItemGroup>
   <ItemGroup>

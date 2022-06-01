@@ -24,13 +24,25 @@
     <ClCompile Include="PrintMenu.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Multi.c">
+    <ClCompile Include="Local.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Sound.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ReadMap.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Single.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NetTestServer.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NetTestClient.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiSelect.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

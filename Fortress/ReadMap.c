@@ -15,9 +15,6 @@ void printMap() {
                     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 3);
                     printf("*");
                     break;
-                case '2':
-                    printf("/");
-                    break;
             }
         }
     }
@@ -26,7 +23,7 @@ void readMap() {
     int i = 0;
     char ch = NULL;
 
-    FILE* fp = fopen("map\\map.bin", "r");
+    FILE* fp = fopen("map\\map1.map", "r");
     if (fp != NULL) {
         while (!feof(fp)) {
             fgets(map[i], 162, fp);

@@ -53,9 +53,11 @@ void printMenu() { // 메인 메뉴 출력
         if (GetAsyncKeyState(VK_SPACE) & 0x8000) { // 스페이스키가 입력되었을 때
             switch (flag) {
             case 1: // 1인 플레이
+                singleStart();
                 break; 
             case 2: // 2인 플레이
-                multiStart();
+                Sleep(200);
+                selMul();
                 break; 
             case 3: // 언어 선택
                 Sleep(200);

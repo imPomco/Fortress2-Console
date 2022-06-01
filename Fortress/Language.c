@@ -36,7 +36,7 @@ void setLang() { // 언어 설정 화면 출력
             }
         }
         if (GetAsyncKeyState(VK_RIGHT)) { // 방향키 오른쪽이 입력되었을 때
-            if (x <= 105) {
+            if (x < 105) {
                 gotoxy(x, y - 2);
                 printf("    ");
                 gotoxy(x += 30, y - 2);
