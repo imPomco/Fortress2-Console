@@ -10,17 +10,20 @@ unsigned __stdcall countDownSer();
 void fireSer(int, int, int, int, int);
 void initSer();
 void serTurnSer(SOCKET, SOCKADDR_IN, int);
+void cliTurnSer(SOCKET, SOCKADDR_IN, int);
+void sendToCli(SOCKET, SOCKADDR_IN, int, int, int, int);
 void server();
 
-static int connFlag = 1;
+static int sendFireToCli = 0;
 static int fireFlag = 0;
 static int countFlag = 1;
-static int count = 15;
+static int count;
+static int headingFlag = 1; // 탱크가 보는 방향 설정, 1 : 오른쪽, 2 : 왼쪽
 
-struct tank serTank = { 10, 20, 100 };
-struct tank cliTank = { 30, 20, 100 };
+static struct tank serTank = { 10, 20, 100 };
+static struct tank cliTank = { 30, 20, 100 };
 
-void netStart() {
+void netStartSer() {
 	readMap();
 	server();
 }
@@ -74,15 +77,13 @@ void server() {
 	serTurnSer(cs, cli_addr, cli_size);
 }
 void serTurnSer(SOCKET s, SOCKADDR_IN c_addr, int c_size) {
-	SOCKET cs = s;
-	SOCKADDR_IN cli_addr = c_addr;
-	int cli_size = c_size;
-
 	static int angle = 45;
 	int power = 0;
 	int move = 100;
 
-	static int headingFlag = 1; // 탱크가 보는 방향 설정, 1 : 오른쪽, 2 : 왼쪽
+	SOCKET cs = s;
+	SOCKADDR_IN cli_addr = c_addr;
+	int cli_size = c_size;
 
 	char t = '@';
 
@@ -91,11 +92,7 @@ void serTurnSer(SOCKET s, SOCKADDR_IN c_addr, int c_size) {
 	printMap();
 
 	while (countFlag) {
-		sendto(cs, &power, sizeof(power), 0, &cli_addr, &cli_size);
-		sendto(cs, &move, sizeof(move), 0, &cli_addr, &cli_size);
-		sendto(cs, &angle, sizeof(angle), 0, &cli_addr, &cli_size);
-		//sendto(cs, &serTank.x, sizeof(serTank.x), 0, &cli_addr, &cli_size);
-		//sendto(cs, &serTank.y, sizeof(serTank.y), 0, &cli_addr, &cli_size);
+		sendToCli(cs, cli_addr, cli_size, move, angle, power);
 
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 9);
 		gotoxy(serTank.x, serTank.y);
@@ -145,13 +142,16 @@ void serTurnSer(SOCKET s, SOCKADDR_IN c_addr, int c_size) {
 				power++;
 				Sleep(30);
 				printf("|");
+				sendToCli(cs, cli_addr, cli_size, move, angle, power);
 				if (KEYDOWN(VK_SPACE)) {
 					fireFlag = 1;
+					sendToCli(cs, cli_addr, cli_size, move, angle, power);
 					fireSer(angle, power, serTank.x, serTank.y, headingFlag);
 					break;
 				}
 				if (power == 100) {
 					fireFlag = 1;
+					sendToCli(cs, cli_addr, cli_size, move, angle, power);
 					fireSer(angle, power, serTank.x, serTank.y, headingFlag);
 					break;
 				}
@@ -174,7 +174,6 @@ void serTurnSer(SOCKET s, SOCKADDR_IN c_addr, int c_size) {
 				Sleep(80);
 				gotoxy(serTank.x, serTank.y);
 				printf(" ");
-				gotoxy(cliTank.x, cliTank.y - 2);
 
 				while (map[serTank.y + 1][serTank.x + 1] != '1') { // 내려갈 때
 					if (serTank.y == 40) // 맵 밖으로 이탈했을 때
@@ -201,7 +200,6 @@ void serTurnSer(SOCKET s, SOCKADDR_IN c_addr, int c_size) {
 				Sleep(80);
 				gotoxy(serTank.x, serTank.y);
 				printf(" ");
-				gotoxy(cliTank.x, cliTank.y - 2);
 
 				while (map[serTank.y + 1][serTank.x - 1] != '1') {// 내려갈 때
 					if (serTank.y == 40)
@@ -221,7 +219,98 @@ void serTurnSer(SOCKET s, SOCKADDR_IN c_addr, int c_size) {
 		gotoxy(150, 46);
 		printf("%02d", count);
 	}
-	Sleep(10);
+	cliTurnSer(cs, cli_addr, cli_size);
+}
+void cliTurnSer(SOCKET s, SOCKADDR_IN c_addr, int c_size) {
+	SOCKET cs = s;
+	SOCKADDR_IN cli_addr = c_addr;
+	int cli_size = c_size;
+
+	static int angle = 45;
+	int moveTemp = 100;
+	int xTemp = cliTank.x;
+	int yTemp = cliTank.y;
+	int power = 0;
+	int move = 100;
+
+	char t = '@';
+
+	initSer();
+	system("cls");
+	printMap();
+
+	while (countFlag) {
+		recvfrom(cs, &move, sizeof(move), 0, &cli_addr, &cli_size);
+		recvfrom(cs, &angle, sizeof(angle), 0, &cli_addr, &cli_size);
+		recvfrom(cs, &power, sizeof(power), 0, &cli_addr, &cli_size);
+		recvfrom(cs, &cliTank.x, sizeof(cliTank.x), 0, &cli_addr, &cli_size);
+		recvfrom(cs, &cliTank.y, sizeof(cliTank.y), 0, &cli_addr, &cli_size);
+		recvfrom(cs, &fireFlag, sizeof(fireFlag), 0, &cli_addr, &cli_size);
+		recvfrom(cs, &headingFlag, sizeof(headingFlag), 0, &cli_addr, &cli_size);
+
+		if (moveTemp != move) {
+			gotoxy(xTemp, yTemp);
+			printf(" ");
+		}
+		moveTemp = move;
+		xTemp = cliTank.x;
+		yTemp = cliTank.y;
+
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 9);
+		gotoxy(serTank.x, serTank.y);
+		printf("%c", t);
+
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
+		gotoxy(cliTank.x, cliTank.y);
+		printf("%c", t);
+
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+		gotoxy(0, 40);
+		for (int i = 0; i <= MAX_X_WIDTH; i++)
+			printf("-");
+
+		gotoxy(30, 42);
+		printf("%s ", lang[5]);
+
+		for (int i = 0; i < cliTank.health; i++) {
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+			if (cliTank.health < 30)
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 4);
+			else if (cliTank.health < 50)
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 6);
+			printf("|");
+		}
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+		gotoxy(20, 44);
+		printf("%s %d", lang[6], angle);
+		gotoxy(30, 44);
+
+		printf("%s ", lang[7]);
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
+		for (int i = 0; i < power; i++)
+			printf("|");
+		if (fireFlag)
+			fireSer(angle, power, cliTank.x, cliTank.y, headingFlag);
+
+
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+		gotoxy(30, 46);
+		printf("%s ", lang[8]);
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 14);
+		for (int i = 0; i < move; i++)
+			printf("|");
+		if (move < 100) {
+			printf("|||||");
+			for (int i = 0; i < (100 - move) / 5; i++)
+				printf("\b\b\b\b\b      ");
+		}
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+		gotoxy(150, 46);
+		printf("%02d", count);
+
+	}
+	serTurnSer(cs, cli_addr, cli_size);
+
 }
 void netStopSer() {
 	//if (closesocket(cs) != 0 || closesocket(s) != 0) {
@@ -358,11 +447,20 @@ void initSer() { // 초기화 함수
 	_beginthreadex(NULL, 0, countDownSer, 0, 0, NULL);
 	fireFlag = 0;
 	countFlag = 1;
-	count = 15;
+	count = 99;
 	while (map[serTank.y + 1][serTank.x + 1] != '1') {
 		serTank.y++;
 	}
 	while (map[cliTank.y + 1][cliTank.x + 1] != '1') {
 		cliTank.y++;
 	}
+}
+void sendToCli(SOCKET cs, SOCKADDR_IN cli_addr, int cli_size, int move, int angle, int power) {
+	sendto(cs, &move, sizeof(move), 0, &cli_addr, &cli_size);
+	sendto(cs, &angle, sizeof(angle), 0, &cli_addr, &cli_size);
+	sendto(cs, &power, sizeof(power), 0, &cli_addr, &cli_size);
+	sendto(cs, &serTank.x, sizeof(serTank.x), 0, &cli_addr, &cli_size);
+	sendto(cs, &serTank.y, sizeof(serTank.y), 0, &cli_addr, &cli_size);
+	sendto(cs, &fireFlag, sizeof(fireFlag), 0, &cli_addr, &cli_size);
+	sendto(cs, &headingFlag, sizeof(headingFlag), 0, &cli_addr, &cli_size);
 }

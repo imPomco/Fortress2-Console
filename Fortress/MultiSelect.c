@@ -105,11 +105,11 @@ void selSerCli() {
             switch (flag) {
             case 1: // 서버
                 Sleep(100);
-                netStart();
+                netStartSer();
                 break;
             case 2: // 클라이언트
                 Sleep(100);
-                client();
+                netStartCli();
                 break;
             case 3: // 메인 메뉴
                 Sleep(100);
