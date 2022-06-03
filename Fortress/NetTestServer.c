@@ -256,6 +256,9 @@ void cliTurnSer(SOCKET s, SOCKADDR_IN c_addr, int c_size) {
 		xTemp = cliTank.x;
 		yTemp = cliTank.y;
 
+		if (fireFlag)
+			fireSer(angle, power, cliTank.x, cliTank.y, headingFlag);
+
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 9);
 		gotoxy(serTank.x, serTank.y);
 		printf("%c", t);
@@ -289,9 +292,6 @@ void cliTurnSer(SOCKET s, SOCKADDR_IN c_addr, int c_size) {
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
 		for (int i = 0; i < power; i++)
 			printf("|");
-		if (fireFlag)
-			fireSer(angle, power, cliTank.x, cliTank.y, headingFlag);
-
 
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
 		gotoxy(30, 46);
