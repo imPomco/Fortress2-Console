@@ -7,6 +7,7 @@ struct tank { //탱크의 좌표 정보와 체력 정보를 가지는 구조체 생성
 	int health;
 };
 unsigned __stdcall countDownSer();
+void netStartSer();
 void fireSer(int, int, int, int, int);
 void initSer();
 void serTurnSer(SOCKET, SOCKADDR_IN, int);
@@ -14,7 +15,6 @@ void cliTurnSer(SOCKET, SOCKADDR_IN, int);
 void sendToCli(SOCKET, SOCKADDR_IN, int, int, int, int);
 void server();
 
-static int sendFireToCli = 0;
 static int fireFlag = 0;
 static int countFlag = 1;
 static int count;
@@ -92,13 +92,13 @@ void serTurnSer(SOCKET s, SOCKADDR_IN c_addr, int c_size) {
 	printMap();
 
 	while (countFlag) {
-		sendto(cs, &move, sizeof(move), 0, &cli_addr, &cli_size);
-		sendto(cs, &angle, sizeof(angle), 0, &cli_addr, &cli_size);
-		sendto(cs, &power, sizeof(power), 0, &cli_addr, &cli_size);
-		sendto(cs, &serTank.x, sizeof(serTank.x), 0, &cli_addr, &cli_size);
-		sendto(cs, &serTank.y, sizeof(serTank.y), 0, &cli_addr, &cli_size);
-		sendto(cs, &fireFlag, sizeof(fireFlag), 0, &cli_addr, &cli_size);
-		sendto(cs, &headingFlag, sizeof(headingFlag), 0, &cli_addr, &cli_size);
+	sendto(cs, &move, sizeof(move), 0, &cli_addr, &cli_size);
+	sendto(cs, &angle, sizeof(angle), 0, &cli_addr, &cli_size);
+	sendto(cs, &power, sizeof(power), 0, &cli_addr, &cli_size);
+	sendto(cs, &serTank.x, sizeof(serTank.x), 0, &cli_addr, &cli_size);
+	sendto(cs, &serTank.y, sizeof(serTank.y), 0, &cli_addr, &cli_size);
+	sendto(cs, &fireFlag, sizeof(fireFlag), 0, &cli_addr, &cli_size);
+	sendto(cs, &headingFlag, sizeof(headingFlag), 0, &cli_addr, &cli_size);
 
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 9);
 		gotoxy(serTank.x, serTank.y);
@@ -148,16 +148,36 @@ void serTurnSer(SOCKET s, SOCKADDR_IN c_addr, int c_size) {
 				power++;
 				Sleep(30);
 				printf("|");
-				sendToCli(cs, cli_addr, cli_size, move, angle, power);
+				sendto(cs, &move, sizeof(move), 0, &cli_addr, &cli_size);
+				sendto(cs, &angle, sizeof(angle), 0, &cli_addr, &cli_size);
+				sendto(cs, &power, sizeof(power), 0, &cli_addr, &cli_size);
+				sendto(cs, &serTank.x, sizeof(serTank.x), 0, &cli_addr, &cli_size);
+				sendto(cs, &serTank.y, sizeof(serTank.y), 0, &cli_addr, &cli_size);
+				sendto(cs, &fireFlag, sizeof(fireFlag), 0, &cli_addr, &cli_size);
+				sendto(cs, &headingFlag, sizeof(headingFlag), 0, &cli_addr, &cli_size);
 				if (KEYDOWN(VK_SPACE)) {
+					Sleep(150);
 					fireFlag = 1;
-					sendToCli(cs, cli_addr, cli_size, move, angle, power);
+					sendto(cs, &move, sizeof(move), 0, &cli_addr, &cli_size);
+					sendto(cs, &angle, sizeof(angle), 0, &cli_addr, &cli_size);
+					sendto(cs, &power, sizeof(power), 0, &cli_addr, &cli_size);
+					sendto(cs, &serTank.x, sizeof(serTank.x), 0, &cli_addr, &cli_size);
+					sendto(cs, &serTank.y, sizeof(serTank.y), 0, &cli_addr, &cli_size);
+					sendto(cs, &fireFlag, sizeof(fireFlag), 0, &cli_addr, &cli_size);
+					sendto(cs, &headingFlag, sizeof(headingFlag), 0, &cli_addr, &cli_size);
 					fireSer(angle, power, serTank.x, serTank.y, headingFlag);
 					break;
 				}
 				if (power == 100) {
 					fireFlag = 1;
-					sendToCli(cs, cli_addr, cli_size, move, angle, power);
+					sendto(cs, &move, sizeof(move), 0, &cli_addr, &cli_size);
+					sendto(cs, &angle, sizeof(angle), 0, &cli_addr, &cli_size);
+					sendto(cs, &power, sizeof(power), 0, &cli_addr, &cli_size);
+					sendto(cs, &serTank.x, sizeof(serTank.x), 0, &cli_addr, &cli_size);
+					sendto(cs, &serTank.y, sizeof(serTank.y), 0, &cli_addr, &cli_size);
+					sendto(cs, &fireFlag, sizeof(fireFlag), 0, &cli_addr, &cli_size);
+					sendto(cs, &headingFlag, sizeof(headingFlag), 0, &cli_addr, &cli_size);
+					Sleep(50);
 					fireSer(angle, power, serTank.x, serTank.y, headingFlag);
 					break;
 				}

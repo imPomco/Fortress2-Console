@@ -32,3 +32,5 @@ extern void singleStart();
 extern void playMusic(int);
 extern void stopMusic(int);
 extern void playFX(int);
+extern void netStartSer();
+extern void netStartCli();
