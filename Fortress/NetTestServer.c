@@ -92,7 +92,13 @@ void serTurnSer(SOCKET s, SOCKADDR_IN c_addr, int c_size) {
 	printMap();
 
 	while (countFlag) {
-		sendToCli(cs, cli_addr, cli_size, move, angle, power);
+		sendto(cs, &move, sizeof(move), 0, &cli_addr, &cli_size);
+		sendto(cs, &angle, sizeof(angle), 0, &cli_addr, &cli_size);
+		sendto(cs, &power, sizeof(power), 0, &cli_addr, &cli_size);
+		sendto(cs, &serTank.x, sizeof(serTank.x), 0, &cli_addr, &cli_size);
+		sendto(cs, &serTank.y, sizeof(serTank.y), 0, &cli_addr, &cli_size);
+		sendto(cs, &fireFlag, sizeof(fireFlag), 0, &cli_addr, &cli_size);
+		sendto(cs, &headingFlag, sizeof(headingFlag), 0, &cli_addr, &cli_size);
 
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 9);
 		gotoxy(serTank.x, serTank.y);
