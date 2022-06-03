@@ -9,17 +9,41 @@ void playMusic(int flag) { // 음악 재생 함수
 		case 2:
 			mciSendString(L"play sounds\\map1_bgm.mp3 repeat", NULL, 0, 0);
 			break;
+		case 3:
+			mciSendString(L"play sounds\\map2_bgm.mp3 repeat", NULL, 0, 0);
+			break;
+		case 4:
+			mciSendString(L"play sounds\\map3_bgm.mp3 repeat", NULL, 0, 0);
+			break;
+		case 5:
+			mciSendString(L"play sounds\\net_wait.mp3 repeat", NULL, 0, 0);
+			break;
+		case 6:
+			mciSendString(L"play sounds\\victory.mp3 repeat", NULL, 0, 0);
+			break;
 	}
 }
 void stopMusic(int flag) { // 음악 중단 함수
 
 	switch (flag) {
-	case 1:
-		mciSendString(L"close sounds\\main_bgm.mp3", NULL, 0, 0);
-		break;
-	case 2:
-		mciSendString(L"close sounds\\map1_bgm.mp3", NULL, 0, 0);
-		break;
+		case 1:
+			mciSendString(L"close sounds\\main_bgm.mp3", NULL, 0, 0);
+			break;
+		case 2:
+			mciSendString(L"close sounds\\map1_bgm.mp3", NULL, 0, 0);
+			break;
+		case 3:
+			mciSendString(L"close sounds\\map2_bgm.mp3", NULL, 0, 0);
+			break;
+		case 4:
+			mciSendString(L"close sounds\\map3_bgm.mp3", NULL, 0, 0);
+			break;
+		case 5:
+			mciSendString(L"close sounds\\net_wait.mp3", NULL, 0, 0);
+			break;
+		case 6:
+			mciSendString(L"close sounds\\victory.mp3", NULL, 0, 0);
+			break;
 	}
 }
 void playFX(int flag) { // 효과음 재생 함수 (효과음 길이가 길지 않아 중단 함수 제작 X)

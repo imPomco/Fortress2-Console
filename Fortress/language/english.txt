@@ -7,3 +7,20 @@ HP
 AN
 PO
 MV
+Local Play
+Network Play
+Main Menu
+Create Server
+Connect Server
+Main Menu
+WsaStartup failed
+Create socket failed
+Bind failed
+Listen Mode Set failed
+Server create successfully
+Waiting for connection...
+- Notice - TCP 5000 port must be open for connection!
+Connection authorization failed
+Please enter the opponent's IP address : 
+Failed to connect server
+Successfully connected to the server.

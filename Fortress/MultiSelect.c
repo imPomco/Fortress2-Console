@@ -14,11 +14,11 @@ void selMul() { // 멀티 선택 화면 출력
     printf("\t\t\t\t\t|                                                                         |\n");
     printf("\t\t\t\t\t|_________________________________________________________________________|\n");
     gotoxy(x, y);
-    printf("로컬 플레이");
+    printf(lang[9]);
     gotoxy(x + 27, y);
-    printf("네트워크 플레이");
+    printf(lang[10]);
     gotoxy(x + 57, y);
-    printf("메인 메뉴");
+    printf(lang[11]);
     gotoxy(x, y - 2);
     printf("  ▼");
     while (1) {
@@ -73,11 +73,11 @@ void selSerCli() {
     printf("\t\t\t\t\t|                                                                         |\n");
     printf("\t\t\t\t\t|_________________________________________________________________________|\n");
     gotoxy(x, y);
-    printf("서버 생성");
+    printf(lang[12]);
     gotoxy(x + 27, y);
-    printf("서버로 연결");
+    printf(lang[13]);
     gotoxy(x + 57, y);
-    printf("메인 메뉴");
+    printf(lang[14]);
     gotoxy(x, y - 2);
     printf("  ▼");
     while (1) {

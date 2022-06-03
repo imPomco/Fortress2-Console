@@ -18,7 +18,7 @@ static int fireFlag = 0;
 static int countFlag = 1;
 static int count = 15;
 struct tank myTank = { 10, 20, 100 };
-struct tank enemyTank = { 30, 20, 100 };
+struct tank enemyTank = { 150, 20, 100 };
 
 void localStart() {
 	stopMusic(1);

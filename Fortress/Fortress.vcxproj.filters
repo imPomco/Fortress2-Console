@@ -36,13 +36,16 @@
     <ClCompile Include="Single.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="NetTestServer.c">
+    <ClCompile Include="NetServer.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="NetTestClient.c">
+    <ClCompile Include="NetClient.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="MultiSelect.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Result.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

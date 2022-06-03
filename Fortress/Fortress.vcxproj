@@ -144,11 +144,12 @@
     <ClCompile Include="Main.c" />
     <ClCompile Include="Language.c" />
     <ClCompile Include="MultiSelect.c" />
-    <ClCompile Include="NetTestClient.c" />
-    <ClCompile Include="NetTestServer.c" />
+    <ClCompile Include="NetClient.c" />
+    <ClCompile Include="NetServer.c" />
     <ClCompile Include="PrintMenu.c" />
     <ClCompile Include="ReadMap.c" />
     <ClCompile Include="Local.c" />
+    <ClCompile Include="Result.c" />
     <ClCompile Include="Single.c" />
     <ClCompile Include="Sound.c" />
   </ItemGroup>

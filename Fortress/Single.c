@@ -19,7 +19,7 @@ static int fireSingleFlag = 0;
 static int countFlag = 1;
 static int count = 15;
 struct tank myTankSingle = { 10, 20, 100 };
-struct tank comTank = { 30, 20, 100 };
+struct tank comTank = { 150, 20, 100 };
 
 void singleStart() {
 	srand(time(NULL));
