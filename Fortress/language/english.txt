@@ -24,3 +24,4 @@ Connection authorization failed
 Please enter the opponent's IP address : 
 Failed to connect server
 Successfully connected to the server.
+Play Again

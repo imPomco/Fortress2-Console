@@ -15,6 +15,7 @@ void init();
 void myTurn();
 
 static int fireFlag = 0;
+static int countStop = 0;
 static int countFlag = 1;
 static int count = 15;
 struct tank myTank = { 10, 20, 100 };
@@ -24,7 +25,13 @@ void localStart() {
 	stopMusic(1);
 	playMusic(2);
 	readMap();
-	myTurn();
+	myTank.x = 10;
+	myTank.y = 20;
+	myTank.health = 100;
+	enemyTank.x = 150;
+	enemyTank.y = 20;
+	enemyTank.health = 100;
+ 	myTurn();
 }
 void myTurn() {
 	static int angle = 45;
@@ -84,6 +91,7 @@ void myTurn() {
 		printf("%s ", lang[7]);
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
 		if (KEYDOWN(VK_SPACE)) {
+			countStop = 1;
 			Sleep(150);
 			while (power <= 100) {
 				power++;
@@ -122,7 +130,7 @@ void myTurn() {
 
 				while (map[myTank.y + 1][myTank.x + 1] != '1') { // 내려갈 때
 					if (myTank.y == 40) // 맵 밖으로 이탈했을 때
-						exit(0);
+						p2VictoryLocal();
 					myTank.y++;
 				}
 				while (map[myTank.y][myTank.x + 1] == '1' && map[myTank.y - 1][myTank.x + 1] == '0') { // 올라갈 때
@@ -149,7 +157,7 @@ void myTurn() {
 
 				while (map[myTank.y + 1][myTank.x - 1] != '1') {// 내려갈 때
 					if (myTank.y == 40)
-						exit(0);
+						p2VictoryLocal();
 					myTank.y++;
 				}
 				while (map[myTank.y][myTank.x - 1] == '1' && map[myTank.y - 1][myTank.x - 1] == '0') { // 올라갈 때
@@ -226,6 +234,7 @@ void enemyTurn() {
 		printf("%s ", lang[7]);
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
 		if (KEYDOWN(VK_SPACE)) {
+			countStop = 1;
 			Sleep(150);
 			while (power <= 100) {
 				power++;
@@ -263,7 +272,7 @@ void enemyTurn() {
 
 				while (map[enemyTank.y + 1][enemyTank.x + 1] != '1') { // 내려갈 때
 					if (enemyTank.y == 40) // 맵 밖으로 이탈했을 때
-						exit(0);
+						p1VictoryLocal();
 					enemyTank.y++;
 				}
 				while (map[enemyTank.y][enemyTank.x + 1] == '1' && map[enemyTank.y - 1][enemyTank.x + 1] == '0') {// 올라갈 때
@@ -289,7 +298,7 @@ void enemyTurn() {
 
 				while (map[enemyTank.y + 1][enemyTank.x - 1] != '1') { // 내려갈 때
 					if (enemyTank.y == 40)
-						exit(0);
+						p2VictoryLocal();
 					enemyTank.y++;
 				}
 				while (map[enemyTank.y][enemyTank.x - 1] == '1' && map[enemyTank.y - 1][enemyTank.x - 1] == '0') { // 올라갈 때
@@ -388,9 +397,13 @@ void fire(int angle, int power, int tank_x, int tank_y, int heading) { // 발사했
 			for (int j = 0; j < 3; j++) {
 				if ((x + j == myTank.x || x - j == myTank.x) && (y == myTank.y || y - 1 == myTank.y || y + 1 == myTank.y)) {
 						myTank.health -= dmg;
+						if (myTank.health <= 0)
+							p2VictoryLocal();
 				}
 				if ((x + j == enemyTank.x || x - j == enemyTank.x) && (y == enemyTank.y || y - 1 == enemyTank.y || y + 1 == enemyTank.y)) {
 						enemyTank.health -= dmg;
+						if (enemyTank.health <= 0)
+							p1VictoryLocal();
 				}
 				if (x + j <= MAX_X_WIDTH) {
 					map[y + 1][x + j] = '0';
@@ -400,14 +413,14 @@ void fire(int angle, int power, int tank_x, int tank_y, int heading) { // 발사했
 			if (map[enemyTank.y + 1][enemyTank.x] == '0')
 				while (map[enemyTank.y + 1][enemyTank.x] != '1') {
 					if (enemyTank.y == 40)
-						exit(0);
+						p1VictoryLocal();
 					else
 						enemyTank.y++;
 				}
 			if (map[myTank.y + 1][myTank.x] == '0')
 				while (map[myTank.y + 1][myTank.x] != '1') {
 					if (myTank.y == 40)
-						exit(0);
+						p2VictoryLocal();
 					else
 						myTank.y++;
 				}
@@ -418,11 +431,13 @@ void fire(int angle, int power, int tank_x, int tank_y, int heading) { // 발사했
 unsigned __stdcall countDown() { // 카운트다운 스레드 선언
 	while (count > 0 && fireFlag == 0) {
 		Sleep(1000);
-		count--;
-		if (count >= 5)
-			playFX(1);
-		else
-			playFX(2);
+		if (!countStop) {
+			count--;
+			if (count >= 5)
+				playFX(1);
+			else
+				playFX(2);
+		}
 	}
 	countFlag = 0;
 	return;
@@ -430,6 +445,7 @@ unsigned __stdcall countDown() { // 카운트다운 스레드 선언
 void init() { // 초기화 함수
 	_beginthreadex(NULL, 0, countDown, 0, 0, NULL);
 	fireFlag = 0;
+	countStop = 0;
 	countFlag = 1;
 	count = 15;
 	while (map[myTank.y + 1][myTank.x + 1] != '1') {

@@ -8,11 +8,12 @@ struct tank { //탱크의 좌표 정보와 체력 정보를 가지는 구조체 생성
 };
 unsigned __stdcall countDownCli();
 void netStartCli();
-void fireCli(int, int, int, int, int);
+void netStopCli(SOCKET);
+void fireCli(int, int, int, int, int, SOCKET);
 void initCli();
-void serTurnCli(SOCKET, SOCKADDR_IN, int);
-void cliTurnCli(SOCKET, SOCKADDR_IN, int);
-void sendToSer(SOCKET, SOCKADDR_IN, int, int, int, int);
+void serTurnCli(SOCKET, SOCKADDR_IN);
+void cliTurnCli(SOCKET, SOCKADDR_IN);
+void sendToSer(SOCKET, int, int, int);
 void client();
 
 static int fireFlag = 0;
@@ -27,6 +28,12 @@ static struct tank cliTank = { 150, 20, 100 };
 
 void netStartCli() {
 	readMap();
+	serTank.x = 10;
+	serTank.y = 20;
+	serTank.health = 100;
+	cliTank.x = 150;
+	cliTank.y = 20;
+	cliTank.health = 100;
 	client();
 }
 void client() {
@@ -72,20 +79,15 @@ void client() {
 	printf("%s\n", lang[25]);
 	stopMusic(5);
 	playMusic(2);
-	serTurnCli(s, sin, sAddr);
+	serTurnCli(s, sin);
 }
-void serTurnCli(SOCKET s_s, SOCKADDR_IN s_in, int s_size) {
+void serTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {
 	static int angle = 45;
 	int moveTemp = 100;
 	int xTemp = serTank.x;
 	int yTemp = serTank.y;
 	int power = 0;
 	int move = 100;
-
-	SOCKET s =s_s;
-	SOCKADDR_IN sin = s_in;
-	int sAddr = s_size;
-
 	char t = '@';
 
 	initCli();
@@ -93,14 +95,14 @@ void serTurnCli(SOCKET s_s, SOCKADDR_IN s_in, int s_size) {
 	printMap();
 
 	while (countFlag) {
-		recvfrom(s, &move, sizeof(move), 0, &sin, &sAddr);
-		recvfrom(s, &angle, sizeof(angle), 0, &sin, &sAddr);
-		recvfrom(s, &power, sizeof(power), 0, &sin, &sAddr);
-		recvfrom(s, &serTank.x, sizeof(serTank.x), 0, &sin, &sAddr);
-		recvfrom(s, &serTank.y, sizeof(serTank.y), 0, &sin, &sAddr);
-		recvfrom(s, &fireFlag, sizeof(fireFlag), 0, &sin, &sAddr);
-		recvfrom(s, &headingFlagSer, sizeof(headingFlagSer), 0, &sin, &sAddr);
-		recvfrom(s, &countStop, sizeof(countStop), 0, &sin, &sAddr);
+		recv(s, &move, sizeof(move), 0);
+		recv(s, &angle, sizeof(angle), 0);
+		recv(s, &power, sizeof(power), 0);
+		recv(s, &serTank.x, sizeof(serTank.x), 0);
+		recv(s, &serTank.y, sizeof(serTank.y), 0);
+		recv(s, &fireFlag, sizeof(fireFlag), 0);
+		recv(s, &headingFlagSer, sizeof(headingFlagSer), 0);
+		recv(s, &countStop, sizeof(countStop), 0);
 
 		if (moveTemp != move) {
 			gotoxy(xTemp, yTemp);
@@ -112,7 +114,7 @@ void serTurnCli(SOCKET s_s, SOCKADDR_IN s_in, int s_size) {
 		yTemp = serTank.y;
 
 		if (fireFlag)
-			fireCli(angle, power, serTank.x, serTank.y, headingFlagSer);
+			fireCli(angle, power, serTank.x, serTank.y, headingFlagSer, s);
 
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 9);
 		gotoxy(serTank.x, serTank.y);
@@ -160,21 +162,19 @@ void serTurnCli(SOCKET s_s, SOCKADDR_IN s_in, int s_size) {
 				printf("\b\b\b\b\b      ");
 			}
 		}
+		if (serTank.y == 40)
+			p2VictoryNet(2);
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
 		gotoxy(150, 46);
 		printf("%02d", count);
 
 	}
-	cliTurnCli(s, sin, sAddr);
+	cliTurnCli(s, ser_addr);
 }
-void cliTurnCli(SOCKET c, SOCKADDR_IN server_addr, int s_size) {
+void cliTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {
 	static int angle = 45;
 	int power = 0;
 	int move = 100;
-
-	SOCKET cs = c;
-	SOCKADDR_IN ser_addr = server_addr;
-	int ser_size = s_size;
 
 	char t = '@';
 
@@ -183,7 +183,7 @@ void cliTurnCli(SOCKET c, SOCKADDR_IN server_addr, int s_size) {
 	printMap();
 
 	while (countFlag) {
-		sendToSer(cs, ser_addr, ser_size, move, angle, power);
+		sendToSer(s, move, angle, power);
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 9);
 		gotoxy(serTank.x, serTank.y);
 		printf("%c", t);
@@ -228,25 +228,25 @@ void cliTurnCli(SOCKET c, SOCKADDR_IN server_addr, int s_size) {
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
 		if (KEYDOWN(VK_SPACE)) {
 			countStop = 1;
-			sendToSer(cs, ser_addr, ser_size, move, angle, power);
+			sendToSer(s, move, angle, power);
 			Sleep(150);
 			while (power <= 100) {
 				power++;
 				Sleep(30);
 				printf("|");
-				sendToSer(cs, ser_addr, ser_size, move, angle, power);
+				sendToSer(s, move, angle, power);
 				if (KEYDOWN(VK_SPACE)) {
 					Sleep(150);
 					fireFlag = 1;
-					sendToSer(cs, ser_addr, ser_size, move, angle, power);
-					fireCli(angle, power, cliTank.x, cliTank.y, headingFlagCli);
+					sendToSer(s, move, angle, power);
+					fireCli(angle, power, cliTank.x, cliTank.y, headingFlagCli, s);
 					break;
 				}
 				if (power == 100) {
 					fireFlag = 1;
-					sendToSer(cs, ser_addr, ser_size, move, angle, power);
+					sendToSer(s, move, angle, power);
 					Sleep(50);
-					fireCli(angle, power, cliTank.x, cliTank.y, headingFlagCli);
+					fireCli(angle, power, cliTank.x, cliTank.y, headingFlagCli, s);
 					break;
 				}
 			}
@@ -270,8 +270,10 @@ void cliTurnCli(SOCKET c, SOCKADDR_IN server_addr, int s_size) {
 				printf(" ");
 
 				while (map[cliTank.y + 1][cliTank.x + 1] != '1') { // 내려갈 때
-					if (cliTank.y == 40) // 맵 밖으로 이탈했을 때
-						exit(0);
+					if (cliTank.y == 40) {
+						netStopCli(s);// 맵 밖으로 이탈했을 때
+						p1VictoryNet(2);
+					}
 					cliTank.y++;
 				}
 				while (map[cliTank.y][cliTank.x + 1] == '1' && map[cliTank.y - 1][cliTank.x + 1] == '0') { // 올라갈 때
@@ -296,8 +298,10 @@ void cliTurnCli(SOCKET c, SOCKADDR_IN server_addr, int s_size) {
 				printf(" ");
 
 				while (map[cliTank.y + 1][cliTank.x - 1] != '1') {// 내려갈 때
-					if (cliTank.y == 40)
-						exit(0);
+					if (cliTank.y == 40) {
+						netStopCli(s);
+						p1VictoryNet(2);
+					}
 					cliTank.y++;
 				}
 				while (map[cliTank.y][cliTank.x - 1] == '1' && map[cliTank.y - 1][cliTank.x - 1] == '0') { // 올라갈 때
@@ -313,21 +317,9 @@ void cliTurnCli(SOCKET c, SOCKADDR_IN server_addr, int s_size) {
 		gotoxy(150, 46);
 		printf("%02d", count);
 	}
-	serTurnCli(cs, ser_addr, ser_size);
+	serTurnCli(s, ser_addr);
 }
-void netStopCli() {
-	//if (closesocket(s) != 0) {
-	//	printf("소켓 제거 실패, 에러 코드 : %d\n", WSAGetLastError());
-	//	WSACleanup();
-	//	return;
-	//}
-
-	//if (WSACleanup() != 0) {
-	//	printf("WSACleanup 실패, 에러코드 : %d\n", WSAGetLastError());
-	//	return;
-	//}
-}
-void fireCli(int angle, int power, int tank_x, int tank_y, int heading) { // 발사했을 때 포탄의 포물선 계산과 포탄 출력 역할 
+void fireCli(int angle, int power, int tank_x, int tank_y, int heading, SOCKET s) { // 발사했을 때 포탄의 포물선 계산과 포탄 출력 역할 
 	const double GRAVITY = 9.8;
 	double radian, time = 0;
 	int x, y;
@@ -406,9 +398,17 @@ void fireCli(int angle, int power, int tank_x, int tank_y, int heading) { // 발�
 			for (int j = 0; j < 3; j++) {
 				if ((x + j == serTank.x || x - j == serTank.x) && (y == serTank.y || y - 1 == serTank.y || y + 1 == serTank.y)) {
 					serTank.health -= dmg;
+					if (serTank.health <= 0) {
+						netStopCli(s);
+						p2VictoryNet(2);
+					}
 				}
 				if ((x + j == cliTank.x || x - j == cliTank.x) && (y == cliTank.y || y - 1 == cliTank.y || y + 1 == cliTank.y)) {
 					cliTank.health -= dmg;
+					if (cliTank.health <= 0) {
+						netStopCli(s);
+						p1VictoryNet(1);
+					}
 				}
 				if (x + j <= MAX_X_WIDTH) {
 					map[y + 1][x + j] = '0';
@@ -417,15 +417,19 @@ void fireCli(int angle, int power, int tank_x, int tank_y, int heading) { // 발�
 			}
 			if (map[cliTank.y + 1][cliTank.x] == '0')
 				while (map[cliTank.y + 1][cliTank.x] != '1') {
-					if (cliTank.y == 40)
-						exit(0);
+					if (cliTank.y == 40) {
+						netStopCli(s);
+						p1VictoryNet(2);
+					}
 					else
 						cliTank.y++;
 				}
 			if (map[serTank.y + 1][serTank.x] == '0')
 				while (map[serTank.y + 1][serTank.x] != '1') {
-					if (serTank.y == 40)
-						exit(0);
+					if (serTank.y == 40) {
+						netStopCli(s);
+						p2VictoryNet(2);
+					}
 					else
 						serTank.y++;
 				}
@@ -452,7 +456,7 @@ void initCli() { // 초기화 함수
 	fireFlag = 0;
 	countFlag = 1;
 	countStop = 0;
-	count = 20;
+	count = 30;
 	while (map[serTank.y + 1][serTank.x + 1] != '1') {
 		serTank.y++;
 	}
@@ -460,13 +464,17 @@ void initCli() { // 초기화 함수
 		cliTank.y++;
 	}
 }
-void sendToSer(SOCKET cs, SOCKADDR_IN ser_addr, int ser_size, int move, int angle, int power) {
-	sendto(cs, &move, sizeof(move), 0, &ser_addr, &ser_size);
-	sendto(cs, &angle, sizeof(angle), 0, &ser_addr, &ser_size);
-	sendto(cs, &power, sizeof(power), 0, &ser_addr, &ser_size);
-	sendto(cs, &cliTank.x, sizeof(serTank.x), 0, &ser_addr, &ser_size);
-	sendto(cs, &cliTank.y, sizeof(serTank.y), 0, &ser_addr, &ser_size);
-	sendto(cs, &fireFlag, sizeof(fireFlag), 0, &ser_addr, &ser_size);
-	sendto(cs, &headingFlagCli, sizeof(headingFlagCli), 0, &ser_addr, &ser_size);
-	sendto(cs, &countStop, sizeof(countStop), 0, &ser_addr, &ser_size);
+void sendToSer(SOCKET cs, int move, int angle, int power) {
+	send(cs, &move, sizeof(move), 0);
+	send(cs, &angle, sizeof(angle), 0);
+	send(cs, &power, sizeof(power), 0);
+	send(cs, &cliTank.x, sizeof(serTank.x), 0);
+	send(cs, &cliTank.y, sizeof(serTank.y), 0);
+	send(cs, &fireFlag, sizeof(fireFlag), 0);
+	send(cs, &headingFlagCli, sizeof(headingFlagCli), 0);
+	send(cs, &countStop, sizeof(countStop), 0);
+}
+void netStopCli(SOCKET s) {
+	closesocket(s);
+	WSACleanup();
 }

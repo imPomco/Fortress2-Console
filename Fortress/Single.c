@@ -16,6 +16,7 @@ void initSingleCom();
 void myTurnSingle();
 
 static int fireSingleFlag = 0;
+static int countStop = 0;
 static int countFlag = 1;
 static int count = 15;
 struct tank myTankSingle = { 10, 20, 100 };
@@ -26,6 +27,12 @@ void singleStart() {
 	stopMusic(1);
 	playMusic(2);
 	readMap();
+	myTankSingle.x = 10;
+	myTankSingle.y = 20;
+	myTankSingle.health = 100;
+	comTank.x = 150;
+	comTank.y = 20;
+	comTank.health = 100;
 	myTurnSingle();
 }
 void myTurnSingle() {
@@ -86,6 +93,7 @@ void myTurnSingle() {
 		printf("%s ", lang[7]);
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
 		if (KEYDOWN(VK_SPACE)) {
+			countStop = 1;
 			Sleep(150);
 			while (power <= 100) {
 				power++;
@@ -124,7 +132,7 @@ void myTurnSingle() {
 
 				while (map[myTankSingle.y + 1][myTankSingle.x + 1] != '1') { // 내려갈 때
 					if (myTankSingle.y == 40)
-						exit(0);
+						comVictorySingle();
 					myTankSingle.y++;
 				}
 				while (map[myTankSingle.y][myTankSingle.x + 1] == '1' && map[myTankSingle.y - 1][myTankSingle.x + 1] == '0') { // 올라갈 때
@@ -151,7 +159,7 @@ void myTurnSingle() {
 
 				while (map[myTankSingle.y + 1][myTankSingle.x - 1] != '1') {// 내려갈 때
 					if (myTankSingle.y == 40)
-						exit(0);
+						comVictorySingle();
 					myTankSingle.y++;
 				}
 				while (map[myTankSingle.y][myTankSingle.x - 1] == '1' && map[myTankSingle.y - 1][myTankSingle.x - 1] == '0') { // 올라갈 때
@@ -200,7 +208,6 @@ void comTurn(int ang, int pow) {
 
 		gotoxy(30, 42);
 		printf("%s ", lang[5]);
-
 		for (int i = 0; i < comTank.health; i++) {
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
 			if (comTank.health < 30)
@@ -316,9 +323,13 @@ void fireSingle(int angle, int power, int tank_x, int tank_y, int heading) { // 
 			for (int j = 0; j < 3; j++) {
 				if ((x + j == myTankSingle.x || x - j == myTankSingle.x) && (y == myTankSingle.y || y - 1 == myTankSingle.y || y + 1 == myTankSingle.y)) {
 					myTankSingle.health -= dmg;
+					if (myTankSingle.health <= 0)
+						comVictorySingle();
 				}
 				if ((x + j == comTank.x || x - j == comTank.x) && (y == comTank.y || y - 1 == comTank.y || y + 1 == comTank.y)) {
 					comTank.health -= dmg;
+					if (comTank.health <= 0)
+						p1VictorySingle();
 				}
 				if (x + j <= MAX_X_WIDTH) {
 					map[y + 1][x + j] = '0';
@@ -328,14 +339,14 @@ void fireSingle(int angle, int power, int tank_x, int tank_y, int heading) { // 
 			if (map[comTank.y + 1][comTank.x] == '0')
 				while (map[comTank.y + 1][comTank.x] != '1') {
 					if (comTank.y == 40)
-						exit(0);
+						p1VictorySingle();
 					else
 						comTank.y++;
 				}
 			if (map[myTankSingle.y + 1][myTankSingle.x] == '0')
 				while (map[myTankSingle.y + 1][myTankSingle.x] != '1') {
 					if (myTankSingle.y == 40)
-						exit(0);
+						comVictorySingle();
 					else
 						myTankSingle.y++;
 				}
@@ -346,11 +357,13 @@ void fireSingle(int angle, int power, int tank_x, int tank_y, int heading) { // 
 unsigned __stdcall countDownSingle() { // 카운트다운 스레드 선언
 	while (count > 0 && fireSingleFlag == 0) {
 		Sleep(1000);
-		count--;
-		if (count >= 5)
-			playFX(1);
-		else
-			playFX(2);
+		if (!countStop) {
+			count--;
+			if (count >= 5)
+				playFX(1);
+			else
+				playFX(2);
+		}
 	}
 	countFlag = 0;
 	return;
@@ -358,6 +371,7 @@ unsigned __stdcall countDownSingle() { // 카운트다운 스레드 선언
 void initSingle() { // 초기화 함수
 	_beginthreadex(NULL, 0, countDownSingle, 0, 0, NULL);
 	fireSingleFlag = 0;
+	countStop = 0;
 	countFlag = 1;
 	count = 15;
 	while (map[myTankSingle.y + 1][myTankSingle.x + 1] != '1') {
