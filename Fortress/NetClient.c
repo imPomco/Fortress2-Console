@@ -17,9 +17,7 @@ void sendToSer(SOCKET, int, int, int);
 void client();
 
 static int fireFlag = 0;
-static int countStop = 0;
-static int countFlag = 1;
-static int count;
+static int turnFlag = 1;
 static int headingFlagCli = 2; // 탱크가 보는 방향 설정, 1 : 오른쪽, 2 : 왼쪽
 static int headingFlagSer = 1;
 
@@ -94,7 +92,7 @@ void serTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {
 	system("cls");
 	printMap();
 
-	while (countFlag) {
+	while (turnFlag) {
 		recv(s, &move, sizeof(move), 0);
 		recv(s, &angle, sizeof(angle), 0);
 		recv(s, &power, sizeof(power), 0);
@@ -102,7 +100,6 @@ void serTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {
 		recv(s, &serTank.y, sizeof(serTank.y), 0);
 		recv(s, &fireFlag, sizeof(fireFlag), 0);
 		recv(s, &headingFlagSer, sizeof(headingFlagSer), 0);
-		recv(s, &countStop, sizeof(countStop), 0);
 
 		if (moveTemp != move) {
 			gotoxy(xTemp, yTemp);
@@ -113,8 +110,10 @@ void serTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {
 		xTemp = serTank.x;
 		yTemp = serTank.y;
 
-		if (fireFlag)
+		if (fireFlag) {
 			fireCli(angle, power, serTank.x, serTank.y, headingFlagSer, s);
+			turnFlag = 0;
+		}
 
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 9);
 		gotoxy(serTank.x, serTank.y);
@@ -166,7 +165,7 @@ void serTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {
 			p2VictoryNet(2);
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
 		gotoxy(150, 46);
-		printf("%02d", count);
+		//printf("%02d", count);
 
 	}
 	cliTurnCli(s, ser_addr);
@@ -182,7 +181,7 @@ void cliTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {
 	system("cls");
 	printMap();
 
-	while (countFlag) {
+	while (turnFlag) {
 		sendToSer(s, move, angle, power);
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 9);
 		gotoxy(serTank.x, serTank.y);
@@ -227,7 +226,7 @@ void cliTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {
 		printf("%s ", lang[7]);
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
 		if (KEYDOWN(VK_SPACE)) {
-			countStop = 1;
+			turnFlag = 0;
 			sendToSer(s, move, angle, power);
 			Sleep(150);
 			while (power <= 100) {
@@ -272,7 +271,7 @@ void cliTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {
 				while (map[cliTank.y + 1][cliTank.x + 1] != '1') { // 내려갈 때
 					if (cliTank.y == 40) {
 						netStopCli(s);// 맵 밖으로 이탈했을 때
-						countStop = 1;
+						turnFlag = 0;
 						p1VictoryNet(2);
 					}
 					cliTank.y++;
@@ -301,7 +300,7 @@ void cliTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {
 				while (map[cliTank.y + 1][cliTank.x - 1] != '1') {// 내려갈 때
 					if (cliTank.y == 40) {
 						netStopCli(s);
-						countStop = 1;
+						turnFlag = 0;
 						p1VictoryNet(2);
 					}
 					cliTank.y++;
@@ -317,7 +316,7 @@ void cliTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {
 			}
 		}
 		gotoxy(150, 46);
-		printf("%02d", count);
+		//printf("%02d", count);
 	}
 	serTurnCli(s, ser_addr);
 }
@@ -439,26 +438,10 @@ void fireCli(int angle, int power, int tank_x, int tank_y, int heading, SOCKET s
 		}
 	}
 }
-unsigned __stdcall countDownCli() { // 카운트다운 스레드 선언
-	while (count > 0 && !fireFlag) {
-		Sleep(1000);
-		if (!countStop) {
-			count--;
-			if (count >= 5)
-				playFX(1);
-			else
-				playFX(2);
-		}
-	}
-	countFlag = 0;
-	return;
-}
 void initCli() { // 초기화 함수
-	_beginthreadex(NULL, 0, countDownCli, 0, 0, NULL);
+	//_beginthreadex(NULL, 0, countDownCli, 0, 0, NULL);
 	fireFlag = 0;
-	countFlag = 1;
-	countStop = 0;
-	count = 30;
+	turnFlag = 1;
 	while (map[serTank.y + 1][serTank.x] != '1') {
 		serTank.y++;
 	}
@@ -474,7 +457,6 @@ void sendToSer(SOCKET cs, int move, int angle, int power) {
 	send(cs, &cliTank.y, sizeof(serTank.y), 0);
 	send(cs, &fireFlag, sizeof(fireFlag), 0);
 	send(cs, &headingFlagCli, sizeof(headingFlagCli), 0);
-	send(cs, &countStop, sizeof(countStop), 0);
 }
 void netStopCli(SOCKET s) {
 	closesocket(s);
