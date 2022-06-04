@@ -272,6 +272,7 @@ void cliTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {
 				while (map[cliTank.y + 1][cliTank.x + 1] != '1') { // 내려갈 때
 					if (cliTank.y == 40) {
 						netStopCli(s);// 맵 밖으로 이탈했을 때
+						countStop = 1;
 						p1VictoryNet(2);
 					}
 					cliTank.y++;
@@ -300,6 +301,7 @@ void cliTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {
 				while (map[cliTank.y + 1][cliTank.x - 1] != '1') {// 내려갈 때
 					if (cliTank.y == 40) {
 						netStopCli(s);
+						countStop = 1;
 						p1VictoryNet(2);
 					}
 					cliTank.y++;
@@ -457,10 +459,10 @@ void initCli() { // 초기화 함수
 	countFlag = 1;
 	countStop = 0;
 	count = 30;
-	while (map[serTank.y + 1][serTank.x + 1] != '1') {
+	while (map[serTank.y + 1][serTank.x] != '1') {
 		serTank.y++;
 	}
-	while (map[cliTank.y + 1][cliTank.x + 1] != '1') {
+	while (map[cliTank.y + 1][cliTank.x] != '1') {
 		cliTank.y++;
 	}
 }

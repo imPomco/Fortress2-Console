@@ -46,15 +46,15 @@ void selMul() { // 멀티 선택 화면 출력
             //switch 문을 사용해 메뉴가 선택되면 그에 맞는 함수를 호출
             switch (flag) {
             case 1: // 로컬 플레이
-                Sleep(100);
+                Sleep(200);
                 localStart();
                 break;
             case 2: // 네트워크 플레이
-                Sleep(100);
+                Sleep(200);
                 selSerCli();
                 break;
             case 3: // 메인 메뉴
-                Sleep(100);
+                Sleep(200);
                 printMenu();
                 break;
             }

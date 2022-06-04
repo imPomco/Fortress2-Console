@@ -131,8 +131,10 @@ void myTurnSingle() {
 				gotoxy(comTank.x, comTank.y - 2);
 
 				while (map[myTankSingle.y + 1][myTankSingle.x + 1] != '1') { // 내려갈 때
-					if (myTankSingle.y == 40)
+					if (myTankSingle.y == 40) {
+						countStop = 1;
 						comVictorySingle();
+					}
 					myTankSingle.y++;
 				}
 				while (map[myTankSingle.y][myTankSingle.x + 1] == '1' && map[myTankSingle.y - 1][myTankSingle.x + 1] == '0') { // 올라갈 때
@@ -158,8 +160,10 @@ void myTurnSingle() {
 				gotoxy(comTank.x, comTank.y - 2);
 
 				while (map[myTankSingle.y + 1][myTankSingle.x - 1] != '1') {// 내려갈 때
-					if (myTankSingle.y == 40)
+					if (myTankSingle.y == 40) {
+						countStop = 1;
 						comVictorySingle();
+					}
 					myTankSingle.y++;
 				}
 				while (map[myTankSingle.y][myTankSingle.x - 1] == '1' && map[myTankSingle.y - 1][myTankSingle.x - 1] == '0') { // 올라갈 때
@@ -374,20 +378,20 @@ void initSingle() { // 초기화 함수
 	countStop = 0;
 	countFlag = 1;
 	count = 15;
-	while (map[myTankSingle.y + 1][myTankSingle.x + 1] != '1') {
+	while (map[myTankSingle.y + 1][myTankSingle.x] != '1') {
 		myTankSingle.y++;
 	}
-	while (map[comTank.y + 1][comTank.x + 1] != '1') {
+	while (map[comTank.y + 1][comTank.x] != '1') {
 		comTank.y++;
 	}
 }
 void initSingleCom() { // 컴퓨터 초기화 함수
 	fireSingleFlag = 0;
 	countFlag = 1;
-	while (map[myTankSingle.y + 1][myTankSingle.x + 1] != '1') {
+	while (map[myTankSingle.y + 1][myTankSingle.x] != '1') {
 		myTankSingle.y++;
 	}
-	while (map[comTank.y + 1][comTank.x + 1] != '1') {
+	while (map[comTank.y + 1][comTank.x] != '1') {
 		comTank.y++;
 	}
 }

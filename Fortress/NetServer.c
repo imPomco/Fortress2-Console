@@ -187,6 +187,7 @@ void serTurnSer(SOCKET cs, SOCKET s, SOCKADDR_IN c_addr) {
 				while (map[serTank.y + 1][serTank.x + 1] != '1') { // 내려갈 때
 					if (serTank.y == 40) {
 						netStopSer(cs, s);// 맵 밖으로 이탈했을 때
+						countStop = 1;
 						p2VictoryNet(1);
 					}
 					serTank.y++;
@@ -215,6 +216,7 @@ void serTurnSer(SOCKET cs, SOCKET s, SOCKADDR_IN c_addr) {
 				while (map[serTank.y + 1][serTank.x - 1] != '1') {// 내려갈 때
 					if (serTank.y == 40) {
 						netStopSer(cs, s);
+						countStop = 1;
 						p2VictoryNet(1);
 					}
 					serTank.y++;
@@ -465,10 +467,10 @@ void initSer() { // 초기화 함수
 	countFlag = 1;
 	countStop = 0;
 	count = 30;
-	while (map[serTank.y + 1][serTank.x + 1] != '1') {
+	while (map[serTank.y + 1][serTank.x] != '1') {
 		serTank.y++;
 	}
-	while (map[cliTank.y + 1][cliTank.x + 1] != '1') {
+	while (map[cliTank.y + 1][cliTank.x] != '1') {
 		cliTank.y++;
 	}
 }

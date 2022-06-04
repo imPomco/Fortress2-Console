@@ -129,8 +129,10 @@ void myTurn() {
 				gotoxy(enemyTank.x, enemyTank.y - 2);
 
 				while (map[myTank.y + 1][myTank.x + 1] != '1') { // 내려갈 때
-					if (myTank.y == 40) // 맵 밖으로 이탈했을 때
+					if (myTank.y == 40) {// 맵 밖으로 이탈했을 때
+						countStop = 1;
 						p2VictoryLocal();
+					}
 					myTank.y++;
 				}
 				while (map[myTank.y][myTank.x + 1] == '1' && map[myTank.y - 1][myTank.x + 1] == '0') { // 올라갈 때
@@ -156,8 +158,10 @@ void myTurn() {
 				gotoxy(enemyTank.x, enemyTank.y - 2);
 
 				while (map[myTank.y + 1][myTank.x - 1] != '1') {// 내려갈 때
-					if (myTank.y == 40)
+					if (myTank.y == 40) {
+						countStop = 1;
 						p2VictoryLocal();
+					}
 					myTank.y++;
 				}
 				while (map[myTank.y][myTank.x - 1] == '1' && map[myTank.y - 1][myTank.x - 1] == '0') { // 올라갈 때
@@ -271,8 +275,10 @@ void enemyTurn() {
 				printf(" ");
 
 				while (map[enemyTank.y + 1][enemyTank.x + 1] != '1') { // 내려갈 때
-					if (enemyTank.y == 40) // 맵 밖으로 이탈했을 때
+					if (enemyTank.y == 40) { // 맵 밖으로 이탈했을 때
+						countStop = 1;
 						p1VictoryLocal();
+					}
 					enemyTank.y++;
 				}
 				while (map[enemyTank.y][enemyTank.x + 1] == '1' && map[enemyTank.y - 1][enemyTank.x + 1] == '0') {// 올라갈 때
@@ -297,8 +303,10 @@ void enemyTurn() {
 				printf(" ");
 
 				while (map[enemyTank.y + 1][enemyTank.x - 1] != '1') { // 내려갈 때
-					if (enemyTank.y == 40)
+					if (enemyTank.y == 40) {
+						countStop = 1;
 						p2VictoryLocal();
+					}
 					enemyTank.y++;
 				}
 				while (map[enemyTank.y][enemyTank.x - 1] == '1' && map[enemyTank.y - 1][enemyTank.x - 1] == '0') { // 올라갈 때
@@ -448,10 +456,10 @@ void init() { // 초기화 함수
 	countStop = 0;
 	countFlag = 1;
 	count = 15;
-	while (map[myTank.y + 1][myTank.x + 1] != '1') {
+	while (map[myTank.y + 1][myTank.x] != '1') {
 		myTank.y++;
 	}
-	while (map[enemyTank.y + 1][enemyTank.x + 1] != '1') {
+	while (map[enemyTank.y + 1][enemyTank.x] != '1') {
 		enemyTank.y++;
 	}
 }
