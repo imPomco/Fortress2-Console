@@ -6,7 +6,6 @@ struct tank { //탱크의 좌표 정보와 체력 정보를 가지는 구조체 생성
 	int y;
 	int health;
 };
-unsigned __stdcall countDownCli();
 void netStartCli();
 void netStopCli(SOCKET);
 void fireCli(int, int, int, int, int, SOCKET);
@@ -165,8 +164,6 @@ void serTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {
 			p2VictoryNet(2);
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
 		gotoxy(150, 46);
-		//printf("%02d", count);
-
 	}
 	cliTurnCli(s, ser_addr);
 }
@@ -316,7 +313,6 @@ void cliTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {
 			}
 		}
 		gotoxy(150, 46);
-		//printf("%02d", count);
 	}
 	serTurnCli(s, ser_addr);
 }
@@ -439,7 +435,6 @@ void fireCli(int angle, int power, int tank_x, int tank_y, int heading, SOCKET s
 	}
 }
 void initCli() { // 초기화 함수
-	//_beginthreadex(NULL, 0, countDownCli, 0, 0, NULL);
 	fireFlag = 0;
 	turnFlag = 1;
 	while (map[serTank.y + 1][serTank.x] != '1') {

@@ -1,5 +1,5 @@
 #include "define.h"
-
+void chi();
 void kor();
 void eng();
 
@@ -60,6 +60,8 @@ void setLang() { // 언어 설정 화면 출력
                     Sleep(100);
                     break;
                 case 3: // 중국어
+                    chi();
+                    Sleep(100);
                     break;
             }
             printMenu();
@@ -89,6 +91,21 @@ void eng() {
     int i = 0;
 
     FILE* file = fopen("language\\english.txt", "r");
+    if (file != NULL) {
+        while (!feof(file)) {
+            fgets(lang[i], 100, file);
+            for (int j = 1; j < 100; j++)
+                if (lang[i][j - 1] == '\n')
+                    lang[i][j - 1] = '\0';
+            i++;
+        }
+        fclose(file);
+    }
+}
+void chi() {
+    int i = 0;
+
+    FILE* file = fopen("language\\chinese.txt", "r");
     if (file != NULL) {
         while (!feof(file)) {
             fgets(lang[i], 100, file);

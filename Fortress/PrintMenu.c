@@ -5,7 +5,7 @@ void printMenu() { // 메인 메뉴 출력
     int flag = 1; //사용자가 어떤 메뉴를 선택했는지 확인하는 변수
     int x = 74, y = 40;
 
-    system("mode con cols=160 lines=50"); // 콘솔 창 크기 지정 cols : 가로, lines : 세로
+    system("mode con cols=160 lines=50 | title=Fortress"); // 콘솔 창 크기 지정 cols : 가로, lines : 세로
 
     playMusic(1);
     gotoxy(0, 2);

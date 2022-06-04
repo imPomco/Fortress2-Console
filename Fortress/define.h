@@ -14,8 +14,8 @@ extern을 모든 소스파일에 각각 입력하는 것 대신 이 헤더 파일에 extern 함수를 선언
 
 #define MAX_X_WIDTH 159
 #define MAX_Y_HEIGHT 40
-static int lang_lines = 0;
 
+static int lang_lines = 0;
 extern char map[40][160];
 extern char lang[40][100];
 extern void printMenu();

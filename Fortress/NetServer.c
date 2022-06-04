@@ -6,7 +6,6 @@ struct tank { //탱크의 좌표 정보와 체력 정보를 가지는 구조체 생성
 	int y;
 	int health;
 };
-unsigned __stdcall countDownSer();
 void netStartSer();
 void netStopSer(SOCKET, SOCKET);
 void fireSer(int, int, int, int, int, SOCKET, SOCKET);
