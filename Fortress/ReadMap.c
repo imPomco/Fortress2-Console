@@ -2,6 +2,8 @@
 
 char map[40][160] = { 0 }; // 40 : 맵 y 좌표, 160 : 맵 x 좌표
 
+int mapColor;
+
 void printMap() {
     for (int i = 39; i >= 0; i--) {
         for (int j = 0; j < 160; j++) {
@@ -12,7 +14,10 @@ void printMap() {
                     printf(" ");
                     break;
                 case '1':
-                    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 3);
+                    if (mapColor == 3)
+                        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 6);
+                    else
+                        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 3);
                     printf("*");
                     break;
             }
@@ -23,6 +28,7 @@ void readMap(int mapRand) {
     FILE* fp;
     int i = 0;
     char ch = NULL;
+    mapColor = mapRand;
     switch (mapRand) {
         case 1:
             fp = fopen("map\\map1.map", "r");
