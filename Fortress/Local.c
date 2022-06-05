@@ -6,6 +6,7 @@ struct tank { //탱크의 좌표 정보와 체력 정보를 가지는 구조체 생성
 	int x;
 	int y;
 	int health;
+	int angle;
 };
 
 unsigned __stdcall countDown();
@@ -19,8 +20,8 @@ static int fireFlag = 0;
 static int countStop = 0;
 static int countFlag = 1;
 static int count = 15;
-struct tank myTank = { 10, 10, 100 };
-struct tank enemyTank = { 150, 10, 100 };
+struct tank myTank = { 10, 10, 100, 45 };
+struct tank enemyTank = { 150, 10, 100, 45 };
 
 void localStart() {
 	stopMusic(1);
@@ -30,13 +31,14 @@ void localStart() {
 	myTank.x = 10;
 	myTank.y = 10;
 	myTank.health = 100;
+	myTank.angle = 45;
 	enemyTank.x = 150;
 	enemyTank.y = 10;
 	enemyTank.health = 100;
+	enemyTank.angle = 45;
  	myTurn();
 }
 void myTurn() {
-	static int angle = 45;
 	int power = 0;
 	int move = 100;
 
@@ -76,17 +78,17 @@ void myTurn() {
 		}
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
 		gotoxy(20, 44);
-		printf("%s %d", lang[6], angle);
+		printf("%s %d", lang[6], myTank.angle);
 		if (KEYDOWN(VK_UP)) {
-			if (angle < 90) {
+			if (myTank.angle < 90) {
 				Sleep(30);
-				angle++;
+				myTank.angle++;
 			}
 		}
 		if (KEYDOWN(VK_DOWN)) {
-			if (angle > 10) {
+			if (myTank.angle > 10) {
 				Sleep(30);
-				angle--;
+				myTank.angle--;
 			}
 		}
 		gotoxy(30, 44);
@@ -101,12 +103,12 @@ void myTurn() {
 				printf("|");
 				if (KEYDOWN(VK_SPACE)) {
 					fireFlag = 1;
-					fire(angle, power, myTank.x, myTank.y, headingFlag);
+					fire(myTank.angle, power, myTank.x, myTank.y, headingFlag);
 					break;
 				}
 				if (power == 100) {
 					fireFlag = 1;
-					fire(angle, power, myTank.x, myTank.y, headingFlag);
+					fire(myTank.angle, power, myTank.x, myTank.y, headingFlag);
 					break;
 				}
 			}
@@ -183,7 +185,6 @@ void myTurn() {
 	enemyTurn();
 }
 void enemyTurn() {
-	static int angle = 45;
 	int power = 0;
 	int move = 100;
 
@@ -223,17 +224,17 @@ void enemyTurn() {
 		}
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
 		gotoxy(20, 44);
-		printf("%s %d", lang[6], angle);
+		printf("%s %d", lang[6], enemyTank.angle);
 		if (KEYDOWN(VK_UP)) {
-			if (angle < 90) {
+			if (enemyTank.angle < 90) {
 				Sleep(30);
-				angle++;
+				enemyTank.angle++;
 			}
 		}
 		if (KEYDOWN(VK_DOWN)) {
-			if (angle > 10) {
+			if (enemyTank.angle > 10) {
 				Sleep(30);
-				angle--;
+				enemyTank.angle--;
 			}
 		}
 		gotoxy(30, 44);
@@ -248,12 +249,12 @@ void enemyTurn() {
 				printf("|");
 				if (KEYDOWN(VK_SPACE)) {
 					fireFlag = 1;
-					fire(angle, power, enemyTank.x, enemyTank.y, headingFlag);
+					fire(enemyTank.angle, power, enemyTank.x, enemyTank.y, headingFlag);
 					break;
 				}
 				if (power == 100) {
 					fireFlag = 1;
-					fire(angle, power, enemyTank.x, enemyTank.y, headingFlag);
+					fire(enemyTank.angle, power, enemyTank.x, enemyTank.y, headingFlag);
 					break;
 				}
 			}

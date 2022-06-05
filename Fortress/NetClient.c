@@ -5,6 +5,7 @@ struct tank { //탱크의 좌표 정보와 체력 정보를 가지는 구조체 생성
 	int x;
 	int y;
 	int health;
+	int angle;
 };
 void netStartCli();
 void netStopCli(SOCKET);
@@ -21,17 +22,19 @@ static int turnFlag = 1;
 static int headingFlagCli = 2; // 탱크가 보는 방향 설정, 1 : 오른쪽, 2 : 왼쪽
 static int headingFlagSer = 1;
 
-static struct tank serTank = { 10, 10, 100 };
-static struct tank cliTank = { 150, 10, 100 };
+static struct tank serTank = { 10, 10, 100, 45 };
+static struct tank cliTank = { 150, 10, 100, 45 };
 
 void netStartCli() {
 	stopMusic(1);
 	serTank.x = 10;
 	serTank.y = 10;
 	serTank.health = 100;
+	serTank.angle = 45;
 	cliTank.x = 150;
 	cliTank.y = 10;
 	cliTank.health = 100;
+	cliTank.angle = 45;
 	client();
 }
 void client() {
@@ -84,7 +87,6 @@ void client() {
 	serTurnCli(s, sin);
 }
 void serTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {
-	static int angle = 45;
 	int moveTemp = 100;
 	int xTemp = serTank.x;
 	int yTemp = serTank.y;
@@ -98,7 +100,7 @@ void serTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {
 
 	while (turnFlag) {
 		recv(s, &move, sizeof(move), 0);
-		recv(s, &angle, sizeof(angle), 0);
+		recv(s, &serTank.angle, sizeof(serTank.angle), 0);
 		recv(s, &power, sizeof(power), 0);
 		recv(s, &serTank.x, sizeof(serTank.x), 0);
 		recv(s, &serTank.y, sizeof(serTank.y), 0);
@@ -115,7 +117,7 @@ void serTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {
 		yTemp = serTank.y;
 
 		if (fireFlag) {
-			fireCli(angle, power, serTank.x, serTank.y, headingFlagSer, s);
+			fireCli(serTank.angle, power, serTank.x, serTank.y, headingFlagSer, s);
 			turnFlag = 0;
 		}
 
@@ -145,7 +147,7 @@ void serTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {
 		}
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
 		gotoxy(20, 44);
-		printf("%s %d", lang[6], angle);
+		printf("%s %d", lang[6], serTank.angle);
 		gotoxy(30, 44);
 
 		printf("%s ", lang[7]);
@@ -173,7 +175,6 @@ void serTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {
 	cliTurnCli(s, ser_addr);
 }
 void cliTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {
-	static int angle = 45;
 	int power = 0;
 	int move = 100;
 
@@ -184,7 +185,7 @@ void cliTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {
 	printMap();
 
 	while (turnFlag) {
-		sendToSer(s, move, angle, power);
+		sendToSer(s, move, cliTank.angle, power);
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 9);
 		gotoxy(serTank.x, serTank.y);
 		printf("%c", t);
@@ -211,17 +212,17 @@ void cliTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {
 		}
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
 		gotoxy(20, 44);
-		printf("%s %d", lang[6], angle);
+		printf("%s %d", lang[6], cliTank.angle);
 		if (KEYDOWN(VK_UP)) {
-			if (angle < 90) {
+			if (cliTank.angle < 90) {
 				Sleep(30);
-				angle++;
+				cliTank.angle++;
 			}
 		}
 		if (KEYDOWN(VK_DOWN)) {
-			if (angle > 10) {
+			if (cliTank.angle > 10) {
 				Sleep(30);
-				angle--;
+				cliTank.angle--;
 			}
 		}
 		gotoxy(30, 44);
@@ -229,25 +230,25 @@ void cliTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
 		if (KEYDOWN(VK_SPACE)) {
 			turnFlag = 0;
-			sendToSer(s, move, angle, power);
+			sendToSer(s, move, cliTank.angle, power);
 			Sleep(150);
 			while (power <= 100) {
 				power++;
 				Sleep(30);
 				printf("|");
-				sendToSer(s, move, angle, power);
+				sendToSer(s, move, cliTank.angle, power);
 				if (KEYDOWN(VK_SPACE)) {
 					Sleep(150);
 					fireFlag = 1;
-					sendToSer(s, move, angle, power);
-					fireCli(angle, power, cliTank.x, cliTank.y, headingFlagCli, s);
+					sendToSer(s, move, cliTank.angle, power);
+					fireCli(cliTank.angle, power, cliTank.x, cliTank.y, headingFlagCli, s);
 					break;
 				}
 				if (power == 100) {
 					fireFlag = 1;
-					sendToSer(s, move, angle, power);
+					sendToSer(s, move, cliTank.angle, power);
 					Sleep(50);
-					fireCli(angle, power, cliTank.x, cliTank.y, headingFlagCli, s);
+					fireCli(cliTank.angle, power, cliTank.x, cliTank.y, headingFlagCli, s);
 					break;
 				}
 			}

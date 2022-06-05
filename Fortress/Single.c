@@ -6,6 +6,7 @@ struct tank { //탱크의 좌표 정보와 체력 정보를 가지는 구조체 생성
 	int x;
 	int y;
 	int health;
+	int angle;
 };
 
 unsigned __stdcall countDownSingle();
@@ -20,8 +21,8 @@ static int fireSingleFlag = 0;
 static int countStop = 0;
 static int countFlag = 1;
 static int count = 15;
-struct tank myTankSingle = { 10, 10, 100 };
-struct tank comTank = { 150, 10, 100 };
+struct tank myTankSingle = { 10, 10, 100, 45 };
+struct tank comTank = { 150, 10, 100, 45 };
 
 void singleStart() {
 	srand(time(NULL));
@@ -31,13 +32,14 @@ void singleStart() {
 	myTankSingle.x = 10;
 	myTankSingle.y = 10;
 	myTankSingle.health = 100;
+	myTankSingle.angle = 45;
 	comTank.x = 150;
 	comTank.y = 10;
 	comTank.health = 100;
+	comTank.angle = 45;
 	myTurnSingle();
 }
 void myTurnSingle() {
-	static int angle = 45;
 	int power = 0;
 	int move = 100;
 
@@ -77,17 +79,17 @@ void myTurnSingle() {
 		}
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
 		gotoxy(20, 44);
-		printf("%s %d", lang[6], angle);
+		printf("%s %d", lang[6], myTankSingle.angle);
 		if (KEYDOWN(VK_UP)) {
-			if (angle < 90) {
+			if (myTankSingle.angle < 90) {
 				Sleep(30);
-				angle++;
+				myTankSingle.angle++;
 			}
 		}
 		if (KEYDOWN(VK_DOWN)) {
-			if (angle > 10) {
+			if (myTankSingle.angle > 10) {
 				Sleep(30);
-				angle--;
+				myTankSingle.angle--;
 			}
 		}
 		gotoxy(30, 44);
@@ -102,12 +104,12 @@ void myTurnSingle() {
 				printf("|");
 				if (KEYDOWN(VK_SPACE)) {
 					fireSingleFlag = 1;
-					fireSingle(angle, power, myTankSingle.x, myTankSingle.y, headingFlag);
+					fireSingle(myTankSingle.angle, power, myTankSingle.x, myTankSingle.y, headingFlag);
 					break;
 				}
 				if (power == 100) {
 					fireSingleFlag = 1;
-					fireSingle(angle, power, myTankSingle.x, myTankSingle.y, headingFlag);
+					fireSingle(myTankSingle.angle, power, myTankSingle.x, myTankSingle.y, headingFlag);
 					break;
 				}
 			}
@@ -181,7 +183,7 @@ void myTurnSingle() {
 		printf("%02d", count);
 	}
 	Sleep(10);
-	comTurn(angle + (rand() % 5 - 5), power + (rand() % 7 - 7));
+	comTurn(myTankSingle.angle + (rand() % 5 - 5), power + (rand() % 7 - 7));
 }
 void comTurn(int ang, int pow) {
 	static int angle = 45;
