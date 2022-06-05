@@ -15,23 +15,24 @@ void initSingle();
 void initSingleCom();
 void myTurnSingle();
 
+static int mapRand;
 static int fireSingleFlag = 0;
 static int countStop = 0;
 static int countFlag = 1;
 static int count = 15;
-struct tank myTankSingle = { 10, 20, 100 };
-struct tank comTank = { 150, 20, 100 };
+struct tank myTankSingle = { 10, 10, 100 };
+struct tank comTank = { 150, 10, 100 };
 
 void singleStart() {
 	srand(time(NULL));
 	stopMusic(1);
-	playMusic(2);
-	readMap();
+	mapRand = rand() % 3 + 1;
+	readMap(mapRand);
 	myTankSingle.x = 10;
-	myTankSingle.y = 20;
+	myTankSingle.y = 10;
 	myTankSingle.health = 100;
 	comTank.x = 150;
-	comTank.y = 20;
+	comTank.y = 10;
 	comTank.health = 100;
 	myTurnSingle();
 }

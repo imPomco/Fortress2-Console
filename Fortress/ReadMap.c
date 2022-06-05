@@ -19,16 +19,43 @@ void printMap() {
         }
     }
 }
-void readMap() {
+void readMap(int mapRand) {
+    FILE* fp;
     int i = 0;
     char ch = NULL;
-
-    FILE* fp = fopen("map\\map1.map", "r");
-    if (fp != NULL) {
-        while (!feof(fp)) {
-            fgets(map[i], 162, fp);
-            i++;
+    switch (mapRand) {
+        case 1:
+            fp = fopen("map\\map1.map", "r");
+            playMusic(2);
+            if (fp != NULL) {
+                while (!feof(fp)) {
+                    fgets(map[i], 162, fp);
+                    i++;
+                }
+                fclose(fp);
+                break;
+        case 2:
+            fp = fopen("map\\map2.map", "r");
+            playMusic(3);
+            if (fp != NULL) {
+                while (!feof(fp)) {
+                    fgets(map[i], 162, fp);
+                    i++;
+                }
+                fclose(fp);
+                break;
+            }
+        case 3:
+            fp = fopen("map\\map3.map", "r");
+            playMusic(4);
+            if (fp != NULL) {
+                while (!feof(fp)) {
+                    fgets(map[i], 162, fp);
+                    i++;
+                }
+                fclose(fp);
+                break;
+            }
         }
-        fclose(fp);
     }
 }

@@ -15,21 +15,22 @@ void cliTurnCli(SOCKET, SOCKADDR_IN);
 void sendToSer(SOCKET, int, int, int);
 void client();
 
+static int mapRand;
 static int fireFlag = 0;
 static int turnFlag = 1;
 static int headingFlagCli = 2; // 탱크가 보는 방향 설정, 1 : 오른쪽, 2 : 왼쪽
 static int headingFlagSer = 1;
 
-static struct tank serTank = { 10, 20, 100 };
-static struct tank cliTank = { 150, 20, 100 };
+static struct tank serTank = { 10, 10, 100 };
+static struct tank cliTank = { 150, 10, 100 };
 
 void netStartCli() {
-	readMap();
+	stopMusic(1);
 	serTank.x = 10;
-	serTank.y = 20;
+	serTank.y = 10;
 	serTank.health = 100;
 	cliTank.x = 150;
-	cliTank.y = 20;
+	cliTank.y = 10;
 	cliTank.health = 100;
 	client();
 }
@@ -38,11 +39,12 @@ void client() {
 	SOCKET s;
 	WSADATA wsaData;
 	SOCKADDR_IN sin;
-	char addrInput[40];
+	char addrInput[40] = {0};
+	for (int i = 0; i < 40; i++)
+		addrInput[i] = NULL;
 
-	system("cls");
-	stopMusic(1);
 	playMusic(5);
+	system("cls");
 
 	if (WSAStartup(WINSOCK_VERSION, &wsaData) != 0) {
 		printf("%s\n", lang[15]);
@@ -56,9 +58,12 @@ void client() {
 		WSACleanup();
 		return;
 	}
-	printf("%s\n", lang[21]);
+	printf("%s\n\n", lang[21]);
 	printf("%s", lang[23]);
+	while (kbhit()) // 버퍼에 저장된 키값 지우는 역할
+		getch();
 	scanf("%s", addrInput);
+
 
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons(5000);
@@ -70,12 +75,12 @@ void client() {
 		WSACleanup();
 		Sleep(1000);
 		client();
-		return;
 	}
 	int sAddr = sizeof(sin);
 	printf("%s\n", lang[25]);
+	recv(s, &mapRand, sizeof(mapRand), 0);
 	stopMusic(5);
-	playMusic(2);
+	readMap(mapRand);
 	serTurnCli(s, sin);
 }
 void serTurnCli(SOCKET s, SOCKADDR_IN ser_addr) {

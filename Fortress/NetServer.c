@@ -15,21 +15,23 @@ void cliTurnSer(SOCKET, SOCKET, SOCKADDR_IN);
 void sendToCli(SOCKET, int, int, int);
 void server();
 
+static int mapRand;
 static int fireFlag = 0;
 static int turnFlag = 1;
 static int headingFlagCli = 2; // 탱크가 보는 방향 설정, 1 : 오른쪽, 2 : 왼쪽
 static int headingFlagSer = 1;
 
-static struct tank serTank = { 10, 20, 100 };
-static struct tank cliTank = { 150, 20, 100 };
+static struct tank serTank = { 10, 10, 100 };
+static struct tank cliTank = { 150, 10, 100 };
 
 void netStartSer() {
-	readMap();
+	stopMusic(1);
+	srand(time(NULL));
 	serTank.x = 10;
-	serTank.y = 20;
+	serTank.y = 10;
 	serTank.health = 100;
 	cliTank.x = 150;
-	cliTank.y = 20;
+	cliTank.y = 10;
 	cliTank.health = 100;
 	server();
 }
@@ -39,9 +41,8 @@ void server() {
 	static WSADATA wsaData;
 	static int cli_size;
 
-	system("cls");
-	stopMusic(1);
 	playMusic(5);
+	system("cls");
 	if (WSAStartup(WINSOCK_VERSION, &wsaData) != 0) {
 
 		printf("%s\n", lang[15]);
@@ -60,28 +61,39 @@ void server() {
 
 	if (bind(s, (SOCKADDR*)&sin, sizeof(sin)) == SOCKET_ERROR) {
 		printf("%s\n", lang[17]);
-		closesocket(s); WSACleanup();
-		return;
+		closesocket(s);
+		WSACleanup();
+		Sleep(2000);
+		stopMusic(5);
+		printMenu();
 	}
 	if (listen(s, SOMAXCONN) != 0) {
 		printf("%s\n", lang[18]);
-		closesocket(s); WSACleanup();
-		return;
+		closesocket(s);
+		WSACleanup();
+		Sleep(2000);
+		stopMusic(5);
+		printMenu();
 	}
-	printf("%s\n", lang[21]);
-	printf("%s\n", lang[19]);
-	printf("%s\n", lang[20]);
+	printf("%s\n\n", lang[19]);
+	printf("%s\n\n", lang[21]);
+	printf("%s\n\n", lang[20]);
 
 	cli_size = sizeof(cli_addr);
 	cs = accept(s, (SOCKADDR*)&cli_addr, &cli_size);
 
 	if (cs == INVALID_SOCKET) {
 		printf("%s\n", lang[22]);
-		closesocket(s); WSACleanup();
-		return;
+		closesocket(s);
+		WSACleanup();
+		Sleep(2000);
+		stopMusic(5);
+		printMenu();
 	}
+	mapRand = rand() % 3 + 1;
+	send(cs, &mapRand, sizeof(mapRand), 0);
 	stopMusic(5);
-	playMusic(2);
+	readMap(mapRand);
 	serTurnSer(cs, s, cli_addr);
 }
 void serTurnSer(SOCKET cs, SOCKET s, SOCKADDR_IN c_addr) {

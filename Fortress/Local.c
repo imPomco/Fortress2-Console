@@ -14,22 +14,24 @@ void fire(int, int, int, int, int);
 void init();
 void myTurn();
 
+static int mapRand;
 static int fireFlag = 0;
 static int countStop = 0;
 static int countFlag = 1;
 static int count = 15;
-struct tank myTank = { 10, 20, 100 };
-struct tank enemyTank = { 150, 20, 100 };
+struct tank myTank = { 10, 10, 100 };
+struct tank enemyTank = { 150, 10, 100 };
 
 void localStart() {
 	stopMusic(1);
-	playMusic(2);
-	readMap();
+	srand(time(NULL));
+	mapRand = rand() % 3 + 1;
+	readMap(mapRand);
 	myTank.x = 10;
-	myTank.y = 20;
+	myTank.y = 10;
 	myTank.health = 100;
 	enemyTank.x = 150;
-	enemyTank.y = 20;
+	enemyTank.y = 10;
 	enemyTank.health = 100;
  	myTurn();
 }
