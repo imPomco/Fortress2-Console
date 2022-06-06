@@ -334,6 +334,7 @@ void fire(int angle, int power, int tank_x, int tank_y, int heading) { // 발사했
 	double radian, time = 0;
 	int x, y;
 	int dmg = 0;
+	int soundCheck = 1;
 
 	power /= 2;
 	radian = angle * 3.14 / 180;
@@ -362,7 +363,6 @@ void fire(int angle, int power, int tank_x, int tank_y, int heading) { // 발사했
 		else
 			Sleep(8);
 		if (map[y][x] == '1') { // 포탄이 지형에 닿았을 경우 지형이 파이는 효과와 피격시 데미지 구현
-			playFX(rand() % 3 + 5);
 			for (int i = 0; i < 5; i++) {
 				if (x + i == myTank.x || x - i == myTank.x) {
 					switch (i) {
@@ -400,9 +400,13 @@ void fire(int angle, int power, int tank_x, int tank_y, int heading) { // 발사했
 						dmg = 10;
 					}
 				}
-				if (x + i <= MAX_X_WIDTH) {
+				if (x + i <= MAX_X_WIDTH && y > 0) {
 					map[y][x + i] = '0';
 					map[y][x - i] = '0';
+					if (soundCheck) {
+						playFX(rand() % 3 + 5);
+						soundCheck = 0;
+					}
 				}
 			}
 			for (int j = 0; j < 3; j++) {
@@ -416,7 +420,7 @@ void fire(int angle, int power, int tank_x, int tank_y, int heading) { // 발사했
 						if (enemyTank.health <= 0)
 							p1VictoryLocal();
 				}
-				if (x + j <= MAX_X_WIDTH) {
+				if (x + j <= MAX_X_WIDTH && y > 0) {
 					map[y + 1][x + j] = '0';
 					map[y + 1][x - j] = '0';
 				}
